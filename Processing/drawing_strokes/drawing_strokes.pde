@@ -1,3 +1,5 @@
+// Used during The Shape of Things (2017-18)
+
 // Usage:
 // * set image filename and parameters
 // * run
