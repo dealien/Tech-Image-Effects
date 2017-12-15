@@ -17,7 +17,7 @@ int stat_type = ABSDIST2; // type of diff calculation: fast: ABSDIST, DIST, slow
 int stroke_len = 3; // length of the stroke, values: 1 and above
 int angles_no = 30; // number of directions stroke can be drew, 2 and above
 int segments = 500; // number of segments of single thread
-float stroke_width = 3; // width of the stroke, 0.5 - 3
+float stroke_width = 1; // width of the stroke, 0.5 - 3
 int stroke_alpha = 100; // alpha channel of the stroke: 30 - 200 
 
 color background_color = color(255,255,255); // RGB
