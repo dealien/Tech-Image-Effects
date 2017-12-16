@@ -9,7 +9,7 @@
 // NOTE: small change to stroke_len, angles_no, stroke_alpha may have dramatic effect
 
 // image filename
-String filename = "image1";
+String filename = "image2";
 String fileext = ".jpg";
 String foldername = "./";
 
@@ -53,7 +53,7 @@ void setup() {
     newh = (int)(max_display_size / ratio);
   }
 
-  size(1200,900);
+  size(800,1200);
  
   reinit();
   printParameters();
