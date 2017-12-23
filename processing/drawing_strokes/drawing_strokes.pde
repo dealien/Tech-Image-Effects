@@ -9,13 +9,13 @@
 // NOTE: small change to stroke_len, angles_no, stroke_alpha may have dramatic effect
 
 // image filename
-String filename = "image2";
-String fileext = ".jpg";
+String filename = "Coffee-Cup";
+String fileext = ".png";
 String foldername = "./";
 
 int stat_type = ABSDIST2; // type of diff calculation: fast: ABSDIST, DIST, slow: HUE, SATURATION, BRIGHTNESS
 int stroke_len = 3; // length of the stroke, values: 1 and above
-int angles_no = 30; // number of directions stroke can be drew, 2 and above
+int angles_no = 2; // number of directions stroke can be drew, 2 and above
 int segments = 500; // number of segments of single thread
 float stroke_width = 1; // width of the stroke, 0.5 - 3
 int stroke_alpha = 100; // alpha channel of the stroke: 30 - 200 
@@ -53,7 +53,7 @@ void setup() {
     newh = (int)(max_display_size / ratio);
   }
 
-  size(800,1200);
+  size(800,600);
  
   reinit();
   printParameters();
@@ -215,7 +215,7 @@ void printParameters() {
 void keyPressed() {
   println("");
   if(keyCode == 32) {
-    buffer.save(foldername + filename + "/res_" + sessionid + hex((int)random(0xffff),4)+"_"+filename+fileext);
+    buffer.save(foldername + filename + "/res_" + sessionid + "_stat" + stat_type + "_len=" + stroke_len + "_ang=" + angles_no + "_seg=" + segments + "_width=" + stroke_width + "_alpha=" + stroke_alpha + hex((int)random(0xffff),4)+"_"+filename+fileext);
     print("image saved");
   } else if(key == 'i') {
     interactive = !interactive;
