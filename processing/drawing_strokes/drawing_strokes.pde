@@ -9,13 +9,13 @@
 // NOTE: small change to stroke_len, angles_no, stroke_alpha may have dramatic effect
 
 // image filename
-String filename = "Coffee-Cup";
-String fileext = ".png";
+String filename = "waiting-room";
+String fileext = ".jpg";
 String foldername = "./";
 
 int stat_type = ABSDIST2; // type of diff calculation: fast: ABSDIST, DIST, slow: HUE, SATURATION, BRIGHTNESS
 int stroke_len = 3; // length of the stroke, values: 1 and above
-int angles_no = 2; // number of directions stroke can be drew, 2 and above
+int angles_no = 15; // number of directions stroke can be drew, 2 and above
 int segments = 500; // number of segments of single thread
 float stroke_width = 1; // width of the stroke, 0.5 - 3
 int stroke_alpha = 100; // alpha channel of the stroke: 30 - 200 
@@ -33,6 +33,8 @@ PGraphics buffer;
 String sessionid;
 
 void setup() {
+  size(1200,800);
+
   sessionid = hex((int)random(0xffff),4);
   img = loadImage(foldername+filename+fileext);
   
@@ -52,8 +54,6 @@ void setup() {
     neww = max_display_size;
     newh = (int)(max_display_size / ratio);
   }
-
-  size(800,600);
  
   reinit();
   printParameters();
