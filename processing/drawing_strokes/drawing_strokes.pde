@@ -9,21 +9,21 @@
 // NOTE: small change to stroke_len, angles_no, stroke_alpha may have dramatic effect
 
 // image filename
-String filename = "image1";
+String filename = "Echo-Park-Lake-photo-for-ASCE1";
 String fileext = ".jpg";
 String foldername = "./";
 
 int stat_type = ABSDIST2; // type of diff calculation: fast: ABSDIST, DIST, slow: HUE, SATURATION, BRIGHTNESS
-int stroke_len = 3; // length of the stroke, values: 1 and above
-int angles_no = 30; // number of directions stroke can be drew, 2 and above
-int segments = 500; // number of segments of single thread
-float stroke_width = 1; // width of the stroke, 0.5 - 3
-int stroke_alpha = 100; // alpha channel of the stroke: 30 - 200 
+int stroke_len = 7; // length of the stroke; 1 and above (default 5?)
+int angles_no = 15; // number of directions the stroke can be drawn; 2 and above (default 30)
+int segments = 500; // number of segments in a single thread (default 500)
+float stroke_width = 1; // width of the stroke; 0.5 - 3 (default 1)
+int stroke_alpha = 100; // alpha channel of the stroke; 30 - 200 (default 100)
 
-color background_color = color(255,255,255); // RGB
+color background_color = color(255,255,255); // RGB (default 255,255,255)
 
-boolean interactive = false;
-int max_display_size = 800; // viewing window size (regardless image size)
+boolean interactive = false; // (default false)
+int max_display_size = 800; // viewing window size (regardless of image size) (default 800)
 
 PImage img;
 
@@ -33,6 +33,8 @@ PGraphics buffer;
 String sessionid;
 
 void setup() {
+  size(650,365); // Set this equal to the dimensions of the image being rendered
+
   sessionid = hex((int)random(0xffff),4);
   img = loadImage(foldername+filename+fileext);
   
@@ -52,8 +54,6 @@ void setup() {
     neww = max_display_size;
     newh = (int)(max_display_size / ratio);
   }
-
-  size(1200,900);
  
   reinit();
   printParameters();
@@ -215,7 +215,7 @@ void printParameters() {
 void keyPressed() {
   println("");
   if(keyCode == 32) {
-    buffer.save(foldername + filename + "/res_" + sessionid + hex((int)random(0xffff),4)+"_"+filename+fileext);
+    buffer.save(foldername + filename + "/res_" + sessionid + "_stat" + stat_type + "_len=" + stroke_len + "_ang=" + angles_no + "_seg=" + segments + "_width=" + stroke_width + "_alpha=" + stroke_alpha + hex((int)random(0xffff),4)+"_"+filename+fileext);
     print("image saved");
   } else if(key == 'i') {
     interactive = !interactive;
