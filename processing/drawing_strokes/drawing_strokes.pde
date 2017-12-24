@@ -9,12 +9,12 @@
 // NOTE: small change to stroke_len, angles_no, stroke_alpha may have dramatic effect
 
 // image filename
-String filename = "waiting-room";
+String filename = "Echo-Park-Lake-photo-for-ASCE1";
 String fileext = ".jpg";
 String foldername = "./";
 
 int stat_type = ABSDIST2; // type of diff calculation: fast: ABSDIST, DIST, slow: HUE, SATURATION, BRIGHTNESS
-int stroke_len = 3; // length of the stroke, values: 1 and above
+int stroke_len = 7; // length of the stroke, values: 1 and above
 int angles_no = 15; // number of directions stroke can be drew, 2 and above
 int segments = 500; // number of segments of single thread
 float stroke_width = 1; // width of the stroke, 0.5 - 3
@@ -33,7 +33,7 @@ PGraphics buffer;
 String sessionid;
 
 void setup() {
-  size(1200,800);
+  size(650,365);
 
   sessionid = hex((int)random(0xffff),4);
   img = loadImage(foldername+filename+fileext);
