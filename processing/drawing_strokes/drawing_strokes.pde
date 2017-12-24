@@ -14,16 +14,16 @@ String fileext = ".jpg";
 String foldername = "./";
 
 int stat_type = ABSDIST2; // type of diff calculation: fast: ABSDIST, DIST, slow: HUE, SATURATION, BRIGHTNESS
-int stroke_len = 7; // length of the stroke, values: 1 and above
-int angles_no = 15; // number of directions stroke can be drew, 2 and above
-int segments = 500; // number of segments of single thread
-float stroke_width = 1; // width of the stroke, 0.5 - 3
-int stroke_alpha = 100; // alpha channel of the stroke: 30 - 200 
+int stroke_len = 7; // length of the stroke; 1 and above (default 5?)
+int angles_no = 15; // number of directions the stroke can be drawn; 2 and above (default 30)
+int segments = 500; // number of segments in a single thread (default 500)
+float stroke_width = 1; // width of the stroke; 0.5 - 3 (default 1)
+int stroke_alpha = 100; // alpha channel of the stroke; 30 - 200 (default 100)
 
-color background_color = color(255,255,255); // RGB
+color background_color = color(255,255,255); // RGB (default 255,255,255)
 
-boolean interactive = false;
-int max_display_size = 800; // viewing window size (regardless image size)
+boolean interactive = false; // (default false)
+int max_display_size = 800; // viewing window size (regardless of image size) (default 800)
 
 PImage img;
 
@@ -33,7 +33,7 @@ PGraphics buffer;
 String sessionid;
 
 void setup() {
-  size(650,365);
+  size(650,365); // Set this equal to the dimensions of the image being rendered
 
   sessionid = hex((int)random(0xffff),4);
   img = loadImage(foldername+filename+fileext);
