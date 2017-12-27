@@ -6,6 +6,8 @@ Some materials used in this project are not my own. These items are shown below,
 ## Processing Scripts
 For the Processing scripts, smaller images are better. Larger images can be resized using [this website](http://resizeimage.net/), or done locally via [ImageMagick](https://www.imagemagick.org/script/index.php). 
 
+Images can be in `.jpg`, `.png`, `.gif`, or `.tga` format. 
+
 # References
 
 #### [image1.jpg](https://unsplash.com/photos/Z1tWLxk7krs)
