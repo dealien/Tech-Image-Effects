@@ -1,4 +1,4 @@
-// Used during The Shape of Things (2017-18)
+// Used during The Shape of Things (2017-18) //<>//
 
 // Usage:
 // * set image filename and parameters
@@ -51,7 +51,7 @@ void settings() {
     neww = max_display_size;
     newh = (int)(max_display_size / ratio);
   }
-  
+  println("Canvas Display Dimensions: "+int(neww)+"x"+int(newh)); // The dimensions of the canvas as it is displayed in the output window
   size(int(neww),int(newh)); // Set this equal to the dimensions of the image being rendered
 }
 
@@ -96,7 +96,7 @@ int sqwidth;
 int calcDiff(PImage img1, PImage img2) {
   int err = 0;
   for(int i=0;i<img1.pixels.length;i++)
-    err += getStat(img1.pixels[i],img2.pixels[i]); //<>//
+    err += getStat(img1.pixels[i],img2.pixels[i]);
   return err;  
 }
 
