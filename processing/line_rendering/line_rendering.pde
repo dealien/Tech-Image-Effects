@@ -175,6 +175,8 @@ void draw() {
     currx = (int)random(img.width);
     curry = (int)random(img.height);
     drawMe();
+    // Saves each frame in ./<filename>/Rendered_Frames/ as <filename>-000001.png, <filename>-000002.png, etc.
+    saveFrame("/"+filename+"/Rendered_Frames/"+filename+"-######.png");
   }
 }
 
