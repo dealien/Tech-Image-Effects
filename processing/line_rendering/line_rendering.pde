@@ -14,10 +14,10 @@ String fileext = ".png";
 String foldername = "./";
 
 int stat_type = ABSDIST2; // type of diff calculation: fast: ABSDIST, ABSDIST2, DIST, slow: HUE, SATURATION, BRIGHTNESS
-int stroke_len = 7; // length of the stroke; 1 and above (default 5?)
+int stroke_len = 1; // length of the stroke; 1 and above (default 5)
 int angles_no = 15; // number of directions the stroke can be drawn; 2 and above (default 30)
-int segments = 500; // number of segments in a single thread (default 500)
-float stroke_width = 1; // width of the stroke; 0.5 - 3 (default 1)
+int segments = 50; // number of segments in a single thread (default 500)
+float stroke_width = 2; // width of the stroke; 0.5 - 3 (default 1)
 int stroke_alpha = 100; // alpha channel of the stroke; 30 - 200 (default 100)
 
 color background_color = color(0,0,0); // RGB (default 255,255,255)
