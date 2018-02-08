@@ -31,6 +31,10 @@ PGraphics buffer;
 
 String sessionid;
 
+int n = 1;
+int frame = 1;
+String framedir;
+
 void settings() {
   img = loadImage(foldername+filename+fileext);
   
@@ -168,6 +172,19 @@ void drawMe() {
   
   buffer.endDraw();
   image(buffer,0,0,width,height);
+  
+  if (frame == 1) {
+    framedir = foldername + filename + "/" + filename + " " + n;
+    File f = new File(framedir);
+    while (f.exists()) {
+      n++;
+      framedir = foldername + filename + "/" + filename + " " + n;
+      f = new File(framedir);
+    }
+  }
+  
+  buffer.save(framedir + "/" + filename + "_" + frame + ".png");
+  frame++;
 }
 
 void draw() {
@@ -175,8 +192,6 @@ void draw() {
     currx = (int)random(img.width);
     curry = (int)random(img.height);
     drawMe();
-    // Saves each frame in ./<filename>/Rendered_Frames/ as <filename>-000001.png, <filename>-000002.png, etc.
-    saveFrame("/"+filename+"/Rendered_Frames/"+filename+"-######.png");
   }
 }
 
