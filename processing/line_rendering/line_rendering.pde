@@ -12,9 +12,10 @@ import java.util.List;
 // * set image filename and parameters
 // * run
 //   * SPACE to save
-//   * click to set random settings
-//   * press 'i' for interactive mode, mouse click or drag starts line, short mouse movement please until you want wait loooong 
-// NOTE: small change to stroke_len, angles_no, stroke_alpha may have dramatic effect
+//   * press 'R' to restart with random settings
+//   * press 'I' for interactive mode, mouse click or drag starts line (longer mouse movements take longer to calculate)
+//   * click to view coordinates at that point
+// NOTE: small changes to stroke_len, angles_no, stroke_alpha may have dramatic effect
 
 // image filename
 String filename = "Auditorium-Patio-Flat";
@@ -182,11 +183,11 @@ void drawMe() {
   image(buffer,0,0,width,height);
   
   if (frame == 1) {
-    framedir = foldername + filename + "/Rendered_Frames/";
+    framedir = foldername + filename + "/" + filename + " Rendered_Frames/";
     File f = new File(framedir);
     while (f.exists()) {
       n++;
-      framedir = foldername + filename + "/Rendered_Frames/";
+      framedir = foldername + filename + "/" + filename + " Rendered_Frames/";
       f = new File(framedir);
     }
   }
@@ -214,21 +215,13 @@ void mouseDragged() {
 
 void mouseClicked() {
   if(!interactive) {
-    stat_type = random(1)<0.05?(int)random(1,4):random(1)<0.3?ABSDIST:random(1)<0.5?ABSDIST2:DIST;
-    stroke_len = (int)random(1,15);
-    angles_no = (int)random(2,50);
-    segments = (int)random(50,1500);
-    stroke_width = random(1)<0.7?1.0:random(0.5,3);
-    stroke_alpha = (int)random(50,200);
-    frame = 1;
-    reinit();
-    printParameters();
+    println("("+ (int)mouseX +", "+ (int)mouseY +")");
   } else {
     mouseDragged();
   }
 }
 
-void printParameters() {
+void printParameters() { // The output parameters can be easily copied and pasted into the beginning of this script
   String s_stat_type = "";
   switch(stat_type) {
     case DIST: s_stat_type = "DIST"; break;
@@ -250,12 +243,22 @@ void printParameters() {
 
 void keyPressed() {
   println("");
-  if(keyCode == 32) {
+  if (keyCode == 32) {
     buffer.save(foldername + filename + "/res_" + sessionid + "_stat" + stat_type + "_len=" + stroke_len + "_ang=" + angles_no + "_seg=" + segments + "_width=" + stroke_width + "_alpha=" + stroke_alpha + hex((int)random(0xffff),4)+"_"+filename+fileext);
     print("image saved");
-  } else if(key == 'i') {
+  } else if (key == 'i') {
     interactive = !interactive;
     println("interactive mode: " + (interactive?"ON":"OFF"));
+  } else if (key == 'r') {
+    stat_type = random(1)<0.05?(int)random(1,4):random(1)<0.3?ABSDIST:random(1)<0.5?ABSDIST2:DIST;
+    stroke_len = (int)random(1,15);
+    angles_no = (int)random(2,50);
+    segments = (int)random(50,1500);
+    stroke_width = random(1)<0.7?1.0:random(0.5,3);
+    stroke_alpha = (int)random(50,200);
+    frame = 1;
+    reinit();
+    printParameters();
   }
 }
 
@@ -267,7 +270,7 @@ final static int ABSDIST = 4;
 final static int ABSDIST2 = 5;
 
 final float getStat(color c1, color c2) {
-  switch(stat_type) {
+  switch (stat_type) {
     case HUE: abs(hue(c1)-hue(c2));
     case BRIGHTNESS: abs(brightness(c1)-brightness(c2));
     case SATURATION: abs(saturation(c1)-saturation(c2));
