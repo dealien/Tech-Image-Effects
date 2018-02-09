@@ -23,11 +23,15 @@ String fileext = ".png";
 String foldername = "./";
 
 int stat_type = ABSDIST2; // type of diff calculation: fast: ABSDIST, ABSDIST2, DIST, slow: HUE, SATURATION, BRIGHTNESS
-int stroke_len = 1; // length of the stroke; 1 and above (default 5)
-int angles_no = 15; // number of directions the stroke can be drawn; 2 and above (default 30)
-int segments = 50; // number of segments in a single thread (default 500)
-float stroke_width = 2; // width of the stroke; 0.5 - 3 (default 1)
-int stroke_alpha = 100; // alpha channel of the stroke; 30 - 200 (default 100)
+int stroke_len = 9; // length of the stroke; 1 and above (default 5)
+int angles_no = 43; // number of directions the stroke can be drawn; 2 and above (default 30)
+int segments = 770; // number of segments in a single thread (default 500)
+float stroke_width = 2.0613706; // width of the stroke; 0.5 - 3 (default 1)
+int stroke_alpha = 124; // alpha channel of the stroke; 30 - 200 (default 100)
+
+// Settings can be copied from the console and pasted in the space below. (Remember to comment out the settings above before running the script) 
+
+
 
 color background_color = color(0,0,0); // RGB (default 255,255,255)
 
@@ -65,6 +69,7 @@ void settings() {
     newh = (int)(max_display_size / ratio);
   }
   println("Canvas Display Dimensions: "+int(neww)+"x"+int(newh)); // The dimensions of the canvas as it is displayed in the output window
+  println("");
   size(int(neww),int(newh)); // Set this equal to the dimensions of the image being rendered
 }
 
@@ -232,19 +237,29 @@ void printParameters() { // The output parameters can be easily copied and paste
     case BRIGHTNESS: s_stat_type = "BRIGHTNESS"; break;
     default: break; 
   }
-  println("stat_type=" + s_stat_type);
-  println("stroke_len=" + stroke_len);
-  println("angles_no=" + angles_no);
-  println("segments=" + segments);
-  println("stroke_alpha=" + stroke_alpha);
-  println("stroke_width=" + stroke_width);
+  println("int stat_type= " + s_stat_type +";");
+  println("int stroke_len= " + stroke_len +";");
+  println("int angles_no= " + angles_no +";");
+  println("int segments= " + segments +";");
+  println("float stroke_width= " + stroke_width +";");
+  println("int stroke_alpha= " + stroke_alpha +";");
   println("");
 }
 
 void keyPressed() {
   println("");
+  String s_stat_type = "";
+  switch(stat_type) {
+    case DIST: s_stat_type = "DIST"; break;
+    case ABSDIST: s_stat_type = "ABSDIST"; break;
+    case ABSDIST2: s_stat_type = "ABSDIST2"; break;
+    case HUE: s_stat_type = "HUE"; break;
+    case SATURATION: s_stat_type = "SATURATION"; break;
+    case BRIGHTNESS: s_stat_type = "BRIGHTNESS"; break;
+    default: break; 
+  }
   if (keyCode == 32) {
-    buffer.save(foldername + filename + "/res_" + sessionid + "_stat" + stat_type + "_len=" + stroke_len + "_ang=" + angles_no + "_seg=" + segments + "_width=" + stroke_width + "_alpha=" + stroke_alpha + hex((int)random(0xffff),4)+"_"+filename+fileext);
+    buffer.save(foldername + filename + "/res_" + sessionid + "_stat=" + s_stat_type + "_len=" + stroke_len + "_ang=" + angles_no + "_seg=" + segments + "_width=" + stroke_width + "_alpha=" + stroke_alpha + "_" + hex((int)random(0xffff),4)+"_"+filename+fileext);
     print("image saved");
   } else if (key == 'i') {
     interactive = !interactive;
