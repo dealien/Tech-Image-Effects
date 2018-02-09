@@ -1,4 +1,12 @@
-// Used during The Shape of Things (2017-18) //<>//
+import java.io.FileNotFoundException; //<>//
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
+import java.util.List;
+// Used during The Shape of Things (2017-18)
 
 // Usage:
 // * set image filename and parameters
@@ -31,6 +39,10 @@ PGraphics buffer;
 
 String sessionid;
 
+int n = 1;
+int frame = 1;
+String framedir;
+
 void settings() {
   img = loadImage(foldername+filename+fileext);
   
@@ -62,7 +74,7 @@ void setup() {
   buffer = createGraphics(img.width, img.height);
   buffer.beginDraw();
   buffer.noFill();
-  buffer.smooth(8);
+  //buffer.smooth(8);
   buffer.endDraw();
    
   reinit();
@@ -168,6 +180,19 @@ void drawMe() {
   
   buffer.endDraw();
   image(buffer,0,0,width,height);
+  
+  if (frame == 1) {
+    framedir = foldername + filename + "/Rendered_Frames/";
+    File f = new File(framedir);
+    while (f.exists()) {
+      n++;
+      framedir = foldername + filename + "/Rendered_Frames/";
+      f = new File(framedir);
+    }
+  }
+  
+  buffer.save(framedir + "/" + filename + "_" + frame + ".png");
+  frame++;
 }
 
 void draw() {
@@ -175,8 +200,6 @@ void draw() {
     currx = (int)random(img.width);
     curry = (int)random(img.height);
     drawMe();
-    // Saves each frame in ./<filename>/Rendered_Frames/ as <filename>-000001.png, <filename>-000002.png, etc.
-    saveFrame("/"+filename+"/Rendered_Frames/"+filename+"-######.png");
   }
 }
 
@@ -197,6 +220,7 @@ void mouseClicked() {
     segments = (int)random(50,1500);
     stroke_width = random(1)<0.7?1.0:random(0.5,3);
     stroke_alpha = (int)random(50,200);
+    frame = 1;
     reinit();
     printParameters();
   } else {
