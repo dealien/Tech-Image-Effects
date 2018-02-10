@@ -204,16 +204,10 @@ void drawMe() {
   image(buffer, 0, 0, width, height);
 
   if (frame == 1) {
-    framedir = foldername + filename + "/" + filename + " Rendered_Frames/";
-    File f = new File(framedir);
-    while (f.exists()) {
-      n++;
-      framedir = foldername + filename + "/" + filename + " Rendered_Frames/";
-      f = new File(framedir);
-    }
+    framedir = foldername + filename + "/" + filename + "_Rendered_Frames_" + hex((int)random(0xffff), 4) + "/";
   }
 
-  buffer.save(framedir + "/" + filename + "_" + frame + ".png");
+  buffer.save(framedir + "/" + filename + "_" + String.format("%06d", frame) + ".png");
   frame++;
 }
 
@@ -301,7 +295,7 @@ void keyPressed() {
     break;
   }
   if (keyCode == 32) {
-    buffer.save(foldername + filename + "/res_" + sessionid + "_stat=" + s_stat_type + "_len=" + stroke_len + "_ang=" + angles_no + "_seg=" + segments + "_width=" + stroke_width + "_alpha=" + stroke_alpha + "_" + hex((int)random(0xffff), 4)+"_"+filename+fileext);
+    buffer.save(foldername + filename + "/res_" + filename + "_" + sessionid + "_stat=" + s_stat_type + "_len=" + stroke_len + "_ang=" + angles_no + "_seg=" + segments + "_width=" + stroke_width + "_alpha=" + stroke_alpha + "_" + hex((int)random(0xffff), 4)+fileext);
     print("image saved");
   } else if (key == 'i') {
     interactive = !interactive;
