@@ -177,7 +177,7 @@ void drawMe() {
           _ny = ny;
           localerr = currerr;
           if (debuglevel > 1) {
-            println(currerr);
+            println("currerr= "+ currerr);
           }
         }
       }
