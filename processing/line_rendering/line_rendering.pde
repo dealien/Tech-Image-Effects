@@ -1,5 +1,6 @@
-import java.io.FileNotFoundException; //<>//
+import java.io.FileNotFoundException; //<>// //<>//
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -7,7 +8,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.List;
 
-public static int debuglevel = 0; // between 0-2
+public static int debuglevel = 1; // between 0-2
 
 // Used during The Shape of Things (2017-18)
 
@@ -24,6 +25,8 @@ public static int debuglevel = 0; // between 0-2
 String filename = "Auditorium-Patio-Flat";
 String fileext = ".png";
 String foldername = "./";
+String foldernameabs = "./Desktop/Tech-Image-Effects/processing/line_rendering/";
+String foldernameabsnd = "/Desktop/Tech-Image-Effects/processing/line_rendering/";
 
 int stat_type = ABSDIST2; // type of diff calculation: fast: ABSDIST, ABSDIST2, DIST, slow: HUE, SATURATION, BRIGHTNESS
 int stroke_len = 9; // length of the stroke; 1 and above (default 5)
@@ -50,11 +53,28 @@ String sessionid;
 int n = 1;
 int frame = 1;
 String framedir;
+String framedirabs;
+String videodir;
 
 int drawnum = 1;
 
 void settings() {
-  img = loadImage(foldername+filename+fileext);
+  PImage oimg = loadImage(foldername+filename+fileext);
+  int ow = oimg.width;
+  int oh = oimg.height;
+  if (ow % 2 != 0 ) {
+    ow = ow - 1;
+    if (debuglevel > 0) {
+      println("Image width trimmed to " + ow);
+    }
+  }
+  if (oh % 2 != 0 ) {
+    oh = oh - 1;
+    if (debuglevel > 0) {
+      println("Image height trimmed to " + oh);
+    }
+  }
+  img = oimg.get(0, 0, ow, oh); // Trim 1 pixel off any uneven dimension
 
   // calculate window size
   int max_display_size;
@@ -80,7 +100,22 @@ void settings() {
 
 void setup() {
   sessionid = hex((int)random(0xffff), 4);
-  img = loadImage(foldername+filename+fileext);
+  PImage oimg = loadImage(foldername+filename+fileext);
+  int ow = oimg.width;
+  int oh = oimg.height;
+  if (ow % 2 != 0 ) {
+    ow = ow - 1;
+    if (debuglevel > 0) {
+      println("Image width trimmed to " + ow);
+    }
+  }
+  if (oh % 2 != 0 ) {
+    oh = oh - 1;
+    if (debuglevel > 0) {
+      println("Image height trimmed to " + oh);
+    }
+  }
+  img = oimg.get(0, 0, ow, oh); // Trim 1 pixel off any uneven dimension
 
   buffer = createGraphics(img.width, img.height);
   buffer.beginDraw();
@@ -204,7 +239,56 @@ void drawMe() {
   image(buffer, 0, 0, width, height);
 
   if (frame == 1) {
-    framedir = foldername + filename + "/" + filename + "_Rendered_Frames_" + hex((int)random(0xffff), 4) + "/";
+    if (!new File("./Desktop/Tech-Image-Effects/").exists()) { 
+      if (debuglevel > 0) {
+        println("Script folder is not on the desktop. Changing references to Downloads...");
+      }
+      foldernameabs = "./Downloads/Tech-Image-Effects/processing/line_rendering/";
+      foldernameabsnd = "/Downloads/Tech-Image-Effects/processing/line_rendering/";
+    }
+    framedir = foldername + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
+    framedirabs = foldernameabs + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
+    videodir = foldernameabs + "Videos/"; 
+    PrintWriter writer = null;
+    try {
+      File compiler = new File(framedirabs + "compile.sh");
+      File f = new File(framedirabs);
+
+      if (debuglevel > 0) {
+        println("f = " + f);
+        println("f created? " + f.mkdir());        
+        println("f is a directory? " + f.isDirectory());
+        println("Creating video compilation script " + compiler);
+        if (compiler.createNewFile() || compiler.isFile()) {
+          println(compiler + " is a file");
+        } else {
+          println(compiler + " is a directory");
+        }
+      }
+
+      f.mkdir();
+      compiler.createNewFile();
+      writer = new PrintWriter(new FileWriter(compiler));
+      writer.println("#!/bin/bash");
+      writer.println("d=$(pwd)");
+      writer.println("nd=$(dirname $d)");
+      writer.println("cd $(dirname $nd)");
+      writer.println("mkdir Videos");
+      writer.println("ffmpeg -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"./Videos/" + filename + " " + sessionid + ".mp4\"");
+    } 
+    catch (IOException e) {
+      System.err.println("IOException: " + e.getMessage());
+    }
+    finally {
+      if (writer != null) { 
+        if (debuglevel > 0) {
+          println("Success!");
+        }
+        writer.close();
+      } else { 
+        System.err.println("Failed to create compiler script");
+      }
+    }
   }
 
   buffer.save(framedir + "/" + filename + "_" + String.format("%06d", frame) + ".png");
@@ -230,7 +314,7 @@ void mouseDragged() {
 
 void mouseClicked() {
   if (!interactive) {
-    println("("+ (int)mouseX +", "+ (int)mouseY +")");
+    println("("+ (int)mouseX +", "+ (int)mouseY +") | frame " + frame);
   } else {
     mouseDragged();
   }
