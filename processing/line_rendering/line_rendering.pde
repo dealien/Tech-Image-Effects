@@ -385,15 +385,19 @@ void keyPressed() {
     interactive = !interactive;
     println("interactive mode: " + (interactive?"ON":"OFF"));
   } else if (key == 'r') {
-    stat_type = random(1)<0.05?(int)random(1, 4):random(1)<0.3?ABSDIST:random(1)<0.5?ABSDIST2:DIST;
-    stroke_len = (int)random(1, 15);
-    angles_no = (int)random(2, 50);
-    segments = (int)random(50, 1500);
-    stroke_width = random(1)<0.7?1.0:random(0.5, 3);
-    stroke_alpha = (int)random(50, 200);
-    frame = 1;
-    reinit();
-    printParameters();
+    if (frame<300) {
+      stat_type = random(1)<0.05?(int)random(1, 4):random(1)<0.3?ABSDIST:random(1)<0.5?ABSDIST2:DIST;
+      stroke_len = (int)random(1, 15);
+      angles_no = (int)random(2, 50);
+      segments = (int)random(50, 1500);
+      stroke_width = random(1)<0.7?1.0:random(0.5, 3);
+      stroke_alpha = (int)random(50, 200);
+      frame = 1;
+      reinit();
+      printParameters();
+    } else {
+      System.err.println("Please restart the script to create a new rendering");
+    }
   }
 }
 
