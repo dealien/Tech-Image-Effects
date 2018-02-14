@@ -246,8 +246,8 @@ void drawMe() {
       foldernameabs = "./Downloads/Tech-Image-Effects/processing/line_rendering/";
       foldernameabsnd = "/Downloads/Tech-Image-Effects/processing/line_rendering/";
     }
-    framedir = foldername + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
-    framedirabs = foldernameabs + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
+    framedir = foldername + "Rendered/" + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
+    framedirabs = foldernameabs + "Rendered/" + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
     videodir = foldernameabs + "Videos/"; 
     PrintWriter writer = null;
     try {
@@ -256,7 +256,7 @@ void drawMe() {
 
       if (debuglevel > 0) {
         println("f = " + f);
-        println("f created? " + f.mkdir());        
+        println("f created? " + f.mkdirs());        
         println("f is a directory? " + f.isDirectory());
         println("Creating video compilation script " + compiler);
         if (compiler.createNewFile() || compiler.isFile()) {
@@ -266,7 +266,7 @@ void drawMe() {
         }
       }
 
-      f.mkdir();
+      f.mkdirs();
       compiler.createNewFile();
       writer = new PrintWriter(new FileWriter(compiler));
       writer.println("#!/bin/bash");
