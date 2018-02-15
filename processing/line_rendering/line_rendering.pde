@@ -271,7 +271,8 @@ void drawMe() {
       writer = new PrintWriter(new FileWriter(compiler));
       writer.println("#!/bin/bash");
       writer.println("d=$(pwd)");
-      writer.println("nd=$(dirname $d)");
+      writer.println("ud=$(dirname $d)");
+      writer.println("nd=$(dirname $ud)");
       writer.println("cd $(dirname $nd)");
       writer.println("mkdir Videos");
       writer.println("ffmpeg -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"./Videos/" + filename + " " + sessionid + ".mp4\"");
