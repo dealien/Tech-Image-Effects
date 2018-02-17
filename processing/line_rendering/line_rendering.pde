@@ -22,7 +22,7 @@ public static int debuglevel = 1; // between 0-2
 // NOTE: small changes to stroke_len, angles_no, stroke_alpha may have dramatic effect
 
 // image filename
-String filename = "Living-Room-Normal";
+String filename = "Doctors-Waiting-Room";
 String fileext = ".png";
 String foldername = "./";
 String foldernameabs = "./Desktop/Tech-Image-Effects/processing/line_rendering/";
@@ -276,6 +276,7 @@ void drawMe() {
       writer.println("cd $(dirname $nd)");
       writer.println("mkdir Videos");
       writer.println("ffmpeg -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"./Videos/" + filename + " " + sessionid + ".mp4\"");
+      writer.println("ffmpeg -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"./Videos/" + filename + " " + sessionid + " Reverse.mp4\"");
     } 
     catch (IOException e) {
       System.err.println("IOException: " + e.getMessage());
