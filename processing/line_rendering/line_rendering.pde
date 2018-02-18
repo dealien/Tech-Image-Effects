@@ -1,4 +1,4 @@
-import java.io.FileNotFoundException; //<>// //<>//
+import java.io.FileNotFoundException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,7 +22,7 @@ public static int debuglevel = 1; // between 0-2
 // NOTE: small changes to stroke_len, angles_no, stroke_alpha may have dramatic effect
 
 // image filename
-String filename = "Auditorium-Patio-Flat";
+String filename = "Coffee-Shop-Logo";
 String fileext = ".png";
 String foldername = "./";
 String foldernameabs = "./Desktop/Tech-Image-Effects/processing/line_rendering/";
@@ -246,8 +246,8 @@ void drawMe() {
       foldernameabs = "./Downloads/Tech-Image-Effects/processing/line_rendering/";
       foldernameabsnd = "/Downloads/Tech-Image-Effects/processing/line_rendering/";
     }
-    framedir = foldername + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
-    framedirabs = foldernameabs + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
+    framedir = foldername + "Rendered/" + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
+    framedirabs = foldernameabs + "Rendered/" + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
     videodir = foldernameabs + "Videos/"; 
     PrintWriter writer = null;
     try {
@@ -256,7 +256,7 @@ void drawMe() {
 
       if (debuglevel > 0) {
         println("f = " + f);
-        println("f created? " + f.mkdir());        
+        println("f created? " + f.mkdirs());        
         println("f is a directory? " + f.isDirectory());
         println("Creating video compilation script " + compiler);
         if (compiler.createNewFile() || compiler.isFile()) {
@@ -266,15 +266,17 @@ void drawMe() {
         }
       }
 
-      f.mkdir();
+      f.mkdirs();
       compiler.createNewFile();
       writer = new PrintWriter(new FileWriter(compiler));
       writer.println("#!/bin/bash");
       writer.println("d=$(pwd)");
-      writer.println("nd=$(dirname $d)");
+      writer.println("ud=$(dirname $d)");
+      writer.println("nd=$(dirname $ud)");
       writer.println("cd $(dirname $nd)");
       writer.println("mkdir Videos");
-      writer.println("ffmpeg -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"./Videos/" + filename + " " + sessionid + ".mp4\"");
+      writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"./Videos/" + filename + " " + sessionid + ".mp4\"");
+      writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"./Videos/" + filename + " " + sessionid + " Reverse.mp4\"");
     } 
     catch (IOException e) {
       System.err.println("IOException: " + e.getMessage());
@@ -385,15 +387,19 @@ void keyPressed() {
     interactive = !interactive;
     println("interactive mode: " + (interactive?"ON":"OFF"));
   } else if (key == 'r') {
-    stat_type = random(1)<0.05?(int)random(1, 4):random(1)<0.3?ABSDIST:random(1)<0.5?ABSDIST2:DIST;
-    stroke_len = (int)random(1, 15);
-    angles_no = (int)random(2, 50);
-    segments = (int)random(50, 1500);
-    stroke_width = random(1)<0.7?1.0:random(0.5, 3);
-    stroke_alpha = (int)random(50, 200);
-    frame = 1;
-    reinit();
-    printParameters();
+    if (frame<300) {
+      stat_type = random(1)<0.05?(int)random(1, 4):random(1)<0.3?ABSDIST:random(1)<0.5?ABSDIST2:DIST;
+      stroke_len = (int)random(1, 15);
+      angles_no = (int)random(2, 50);
+      segments = (int)random(50, 1500);
+      stroke_width = random(1)<0.7?1.0:random(0.5, 3);
+      stroke_alpha = (int)random(50, 200);
+      frame = 1;
+      reinit();
+      printParameters();
+    } else {
+      System.err.println("Please restart the script to create a new rendering");
+    }
   }
 }
 
