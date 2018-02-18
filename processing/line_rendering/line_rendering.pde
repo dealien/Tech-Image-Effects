@@ -22,7 +22,7 @@ public static int debuglevel = 1; // between 0-2
 // NOTE: small changes to stroke_len, angles_no, stroke_alpha may have dramatic effect
 
 // image filename
-String filename = "Doctors-Waiting-Room";
+String filename = "Coffee-Shop-Logo";
 String fileext = ".png";
 String foldername = "./";
 String foldernameabs = "./Desktop/Tech-Image-Effects/processing/line_rendering/";
