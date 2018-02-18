@@ -22,11 +22,14 @@ public static int debuglevel = 1; // between 0-2
 // NOTE: small changes to stroke_len, angles_no, stroke_alpha may have dramatic effect
 
 // image filename
-String filename = "Coffee-Shop-Logo";
+String filename = "Adam-Before-Automated";
 String fileext = ".png";
 String foldername = "./";
 String foldernameabs = "./Desktop/Tech-Image-Effects/processing/line_rendering/";
 String foldernameabsnd = "/Desktop/Tech-Image-Effects/processing/line_rendering/";
+
+Boolean writeframes = false; // Determines whether rendered frames will be written to the disk
+Boolean autorestart = true; // If this is false, the rendering will continue past the set maxframes
 
 int stat_type = ABSDIST2; // type of diff calculation: fast: ABSDIST, ABSDIST2, DIST, slow: HUE, SATURATION, BRIGHTNESS
 int stroke_len = 9; // length of the stroke; 1 and above (default 5)
@@ -34,6 +37,7 @@ int angles_no = 43; // number of directions the stroke can be drawn; 2 and above
 int segments = 770; // number of segments in a single thread (default 500)
 float stroke_width = 2.0613706; // width of the stroke; 0.5 - 3 (default 1)
 int stroke_alpha = 124; // alpha channel of the stroke; 30 - 200 (default 100)
+int maxframes = 20; // the number of frames to render before starting a new rendering (with the same settings)
 
 // Settings can be copied from the console and pasted in the space below. (Remember to comment out the settings above before running the script) 
 
@@ -238,63 +242,71 @@ void drawMe() {
   buffer.endDraw();
   image(buffer, 0, 0, width, height);
 
-  if (frame == 1) {
-    if (!new File("./Desktop/Tech-Image-Effects/").exists()) { 
-      if (debuglevel > 0) {
-        println("Script folder is not on the desktop. Changing references to Downloads...");
-      }
-      foldernameabs = "./Downloads/Tech-Image-Effects/processing/line_rendering/";
-      foldernameabsnd = "/Downloads/Tech-Image-Effects/processing/line_rendering/";
-    }
-    framedir = foldername + "Rendered/" + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
-    framedirabs = foldernameabs + "Rendered/" + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
-    videodir = foldernameabs + "Videos/"; 
-    PrintWriter writer = null;
-    try {
-      File compiler = new File(framedirabs + "compile.sh");
-      File f = new File(framedirabs);
-
-      if (debuglevel > 0) {
-        println("f = " + f);
-        println("f created? " + f.mkdirs());        
-        println("f is a directory? " + f.isDirectory());
-        println("Creating video compilation script " + compiler);
-        if (compiler.createNewFile() || compiler.isFile()) {
-          println(compiler + " is a file");
-        } else {
-          println(compiler + " is a directory");
-        }
-      }
-
-      f.mkdirs();
-      compiler.createNewFile();
-      writer = new PrintWriter(new FileWriter(compiler));
-      writer.println("#!/bin/bash");
-      writer.println("d=$(pwd)");
-      writer.println("ud=$(dirname $d)");
-      writer.println("nd=$(dirname $ud)");
-      writer.println("cd $(dirname $nd)");
-      writer.println("mkdir Videos");
-      writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"./Videos/" + filename + " " + sessionid + ".mp4\"");
-      writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"./Videos/" + filename + " " + sessionid + " Reverse.mp4\"");
-    } 
-    catch (IOException e) {
-      System.err.println("IOException: " + e.getMessage());
-    }
-    finally {
-      if (writer != null) { 
+  if (writeframes == true) {
+    if (frame == 1) {
+      if (!new File("./Desktop/Tech-Image-Effects/").exists()) { 
         if (debuglevel > 0) {
-          println("Success!");
+          println("Script folder is not on the desktop. Changing references to Downloads...");
         }
-        writer.close();
-      } else { 
-        System.err.println("Failed to create compiler script");
+        foldernameabs = "./Downloads/Tech-Image-Effects/processing/line_rendering/";
+        foldernameabsnd = "/Downloads/Tech-Image-Effects/processing/line_rendering/";
+      }
+      framedir = foldername + "Rendered/" + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
+      framedirabs = foldernameabs + "Rendered/" + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
+      videodir = foldernameabs + "Videos/"; 
+      PrintWriter writer = null;
+      try {
+        File compiler = new File(framedirabs + "compile.sh");
+        File f = new File(framedirabs);
+
+        if (debuglevel > 0) {
+          println("f = " + f);
+          println("f created? " + f.mkdirs());        
+          println("f is a directory? " + f.isDirectory());
+          println("Creating video compilation script " + compiler);
+          if (compiler.createNewFile() || compiler.isFile()) {
+            println(compiler + " is a file");
+          } else {
+            println(compiler + " is a directory");
+          }
+        }
+
+        f.mkdirs();
+        compiler.createNewFile();
+        writer = new PrintWriter(new FileWriter(compiler));
+        writer.println("#!/bin/bash");
+        writer.println("d=$(pwd)");
+        writer.println("ud=$(dirname $d)");
+        writer.println("nd=$(dirname $ud)");
+        writer.println("cd $(dirname $nd)");
+        writer.println("mkdir Videos");
+        writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"./Videos/" + filename + " " + sessionid + ".mp4\"");
+        writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"./Videos/" + filename + " " + sessionid + " Reverse.mp4\"");
+      } 
+      catch (IOException e) {
+        System.err.println("IOException: " + e.getMessage());
+      }
+      finally {
+        if (writer != null) { 
+          if (debuglevel > 0) {
+            println("Success!");
+          }
+          writer.close();
+        } else { 
+          System.err.println("Failed to create compiler script");
+        }
       }
     }
+    buffer.save(framedir + "/" + filename + "_" + String.format("%06d", frame) + ".png");
   }
-
-  buffer.save(framedir + "/" + filename + "_" + String.format("%06d", frame) + ".png");
   frame++;
+
+  if (frame > maxframes) {
+    println("Reached frame limit. Beginning new rendering...");
+    frame = 1;
+    reinit();
+    printParameters();
+  }
 }
 
 void draw() {
@@ -352,6 +364,7 @@ void printParameters() { // The output parameters can be easily copied and paste
   println("int segments= " + segments +";");
   println("float stroke_width= " + stroke_width +";");
   println("int stroke_alpha= " + stroke_alpha +";");
+  println("int maxframes= " + maxframes);
   println("");
 }
 
@@ -387,7 +400,8 @@ void keyPressed() {
     interactive = !interactive;
     println("interactive mode: " + (interactive?"ON":"OFF"));
   } else if (key == 'r') {
-    if (frame<300) {
+    autorestart = false; // Manually restarting the rendering disables automatic restarting of the rendering for the current session
+    if (frame < 300) {
       stat_type = random(1)<0.05?(int)random(1, 4):random(1)<0.3?ABSDIST:random(1)<0.5?ABSDIST2:DIST;
       stroke_len = (int)random(1, 15);
       angles_no = (int)random(2, 50);
