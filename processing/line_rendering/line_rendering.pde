@@ -28,6 +28,8 @@ String foldername = "./";
 String foldernameabs = "./Desktop/Tech-Image-Effects/processing/line_rendering/";
 String foldernameabsnd = "/Desktop/Tech-Image-Effects/processing/line_rendering/";
 
+Boolean writeframes = true; // Determines whether rendered frames will be written to the disk
+
 int stat_type = ABSDIST2; // type of diff calculation: fast: ABSDIST, ABSDIST2, DIST, slow: HUE, SATURATION, BRIGHTNESS
 int stroke_len = 9; // length of the stroke; 1 and above (default 5)
 int angles_no = 43; // number of directions the stroke can be drawn; 2 and above (default 30)
@@ -238,62 +240,63 @@ void drawMe() {
   buffer.endDraw();
   image(buffer, 0, 0, width, height);
 
-  if (frame == 1) {
-    if (!new File("./Desktop/Tech-Image-Effects/").exists()) { 
-      if (debuglevel > 0) {
-        println("Script folder is not on the desktop. Changing references to Downloads...");
-      }
-      foldernameabs = "./Downloads/Tech-Image-Effects/processing/line_rendering/";
-      foldernameabsnd = "/Downloads/Tech-Image-Effects/processing/line_rendering/";
-    }
-    framedir = foldername + "Rendered/" + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
-    framedirabs = foldernameabs + "Rendered/" + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
-    videodir = foldernameabs + "Videos/"; 
-    PrintWriter writer = null;
-    try {
-      File compiler = new File(framedirabs + "compile.sh");
-      File f = new File(framedirabs);
-
-      if (debuglevel > 0) {
-        println("f = " + f);
-        println("f created? " + f.mkdirs());        
-        println("f is a directory? " + f.isDirectory());
-        println("Creating video compilation script " + compiler);
-        if (compiler.createNewFile() || compiler.isFile()) {
-          println(compiler + " is a file");
-        } else {
-          println(compiler + " is a directory");
-        }
-      }
-
-      f.mkdirs();
-      compiler.createNewFile();
-      writer = new PrintWriter(new FileWriter(compiler));
-      writer.println("#!/bin/bash");
-      writer.println("d=$(pwd)");
-      writer.println("ud=$(dirname $d)");
-      writer.println("nd=$(dirname $ud)");
-      writer.println("cd $(dirname $nd)");
-      writer.println("mkdir Videos");
-      writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"./Videos/" + filename + " " + sessionid + ".mp4\"");
-      writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"./Videos/" + filename + " " + sessionid + " Reverse.mp4\"");
-    } 
-    catch (IOException e) {
-      System.err.println("IOException: " + e.getMessage());
-    }
-    finally {
-      if (writer != null) { 
+  if (writeframes == true) {
+    if (frame == 1) {
+      if (!new File("./Desktop/Tech-Image-Effects/").exists()) { 
         if (debuglevel > 0) {
-          println("Success!");
+          println("Script folder is not on the desktop. Changing references to Downloads...");
         }
-        writer.close();
-      } else { 
-        System.err.println("Failed to create compiler script");
+        foldernameabs = "./Downloads/Tech-Image-Effects/processing/line_rendering/";
+        foldernameabsnd = "/Downloads/Tech-Image-Effects/processing/line_rendering/";
+      }
+      framedir = foldername + "Rendered/" + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
+      framedirabs = foldernameabs + "Rendered/" + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
+      videodir = foldernameabs + "Videos/"; 
+      PrintWriter writer = null;
+      try {
+        File compiler = new File(framedirabs + "compile.sh");
+        File f = new File(framedirabs);
+
+        if (debuglevel > 0) {
+          println("f = " + f);
+          println("f created? " + f.mkdirs());        
+          println("f is a directory? " + f.isDirectory());
+          println("Creating video compilation script " + compiler);
+          if (compiler.createNewFile() || compiler.isFile()) {
+            println(compiler + " is a file");
+          } else {
+            println(compiler + " is a directory");
+          }
+        }
+
+        f.mkdirs();
+        compiler.createNewFile();
+        writer = new PrintWriter(new FileWriter(compiler));
+        writer.println("#!/bin/bash");
+        writer.println("d=$(pwd)");
+        writer.println("ud=$(dirname $d)");
+        writer.println("nd=$(dirname $ud)");
+        writer.println("cd $(dirname $nd)");
+        writer.println("mkdir Videos");
+        writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"./Videos/" + filename + " " + sessionid + ".mp4\"");
+        writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"./Videos/" + filename + " " + sessionid + " Reverse.mp4\"");
+      } 
+      catch (IOException e) {
+        System.err.println("IOException: " + e.getMessage());
+      }
+      finally {
+        if (writer != null) { 
+          if (debuglevel > 0) {
+            println("Success!");
+          }
+          writer.close();
+        } else { 
+          System.err.println("Failed to create compiler script");
+        }
       }
     }
+    buffer.save(framedir + "/" + filename + "_" + String.format("%06d", frame) + ".png");
   }
-
-  buffer.save(framedir + "/" + filename + "_" + String.format("%06d", frame) + ".png");
   frame++;
 }
 
