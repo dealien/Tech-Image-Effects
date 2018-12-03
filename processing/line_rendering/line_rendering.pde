@@ -248,7 +248,26 @@ void drawMe() {
       println("videodir = "+videodir);
       PrintWriter writer = null;
       try {
-        File compiler = new File(framedir + "compile.sh");
+        String cname="compile.sh";
+        OsCheck.OSType ostype=OsCheck.getOperatingSystemType();
+        println("os = "+ostype);
+        switch (ostype) {
+        case Windows: 
+          { 
+            cname="compile.bat";
+            break;
+          }
+        case MacOS:
+        case Linux: 
+          {
+            cname="compile.sh";
+            break;
+          }
+        case Other:          
+          throw new IOException("Operating system could not be determined."); // Throws an exception if unable to determine the operating system
+        }
+
+        File compiler = new File(framedir + cname);
         File f = new File(framedir);
 
         if (debuglevel > 0) {
@@ -266,14 +285,39 @@ void drawMe() {
         f.mkdirs();
         compiler.createNewFile();
         writer = new PrintWriter(new FileWriter(compiler));
-        writer.println("#!/bin/bash");
-        writer.println("d=$(pwd)");
-        writer.println("ud=$(dirname $d)");
-        writer.println("nd=$(dirname $ud)");
-        writer.println("cd $(dirname $nd)");
-        writer.println("mkdir Videos");
-        writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"./Videos/" + filename + " " + sessionid + ".mp4\"");
-        writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"./Videos/" + filename + " " + sessionid + " Reverse.mp4\"");
+        switch (ostype) {
+        case Windows: 
+          {
+            writer.println("@echo off");
+            writer.println("set d=%~dp0");
+            writer.println("echo \"%d%\"");
+            writer.println("for %%a in (\"%d%\") do set \"p_dir=%%~dpa\"");
+            writer.println("for %%a in (%p_dir:~0,-1%) do set \"p2_dir=%%~dpa\"");
+            writer.println("for %%a in (%p2_dir:~0,-1%) do set \"p3_dir=%%~dpa\"");
+            writer.println("set videodir=%p3_dir%Videos");
+            writer.println("echo %videodir%");
+            writer.println("if not exist %videodir% mkdir %videodir%");
+            writer.println("cd %videodir%");
+            writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"%d%\\"+filename+"_%%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"%videodir%\\" + filename + " " + sessionid + ".mp4\"");
+            writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"%d%\\"+filename+"_%%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"%videodir%\\" + filename + " " + sessionid + " Reverse.mp4\"");
+            break;
+          }
+        case MacOS: 
+        case Linux: 
+          {
+            writer.println("#!/bin/bash");
+            writer.println("d=$(pwd)");
+            writer.println("ud=$(dirname $d)");
+            writer.println("nd=$(dirname $ud)");
+            writer.println("cd $(dirname $nd)");
+            writer.println("mkdir Videos");
+            writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"./Videos/" + filename + " " + sessionid + ".mp4\"");
+            writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"./Videos/" + filename + " " + sessionid + " Reverse.mp4\"");
+            break;
+          }
+        case Other: 
+          throw new IOException("Operating system could not be determined."); // Throws an exception if unable to determine the operating system
+        }
       } 
       catch (IOException e) {
         System.err.println("IOException: " + e.getMessage());
@@ -430,5 +474,49 @@ final float getStat(color c1, color c2) {
     return abs( (red(c1)+blue(c1)+green(c1)) - (red(c2)+blue(c2)+green(c2)) );
   default: 
     return sq(red(c1)-red(c2)) + sq(green(c1)-green(c2)) + sq(blue(c1)-blue(c2));
+  }
+}
+
+/**
+ * helper class to check the operating system this Java VM runs in
+ *
+ * please keep the notes below as a pseudo-license
+ *
+ * http://stackoverflow.com/questions/228477/how-do-i-programmatically-determine-operating-system-in-java
+ * compare to http://svn.terracotta.org/svn/tc/dso/tags/2.6.4/code/base/common/src/com/tc/util/runtime/Os.java
+ * http://www.docjar.com/html/api/org/apache/commons/lang/SystemUtils.java.html
+ */
+import java.util.Locale;
+public static final class OsCheck {
+  /**
+   * types of Operating Systems
+   */
+  public enum OSType {
+    Windows, MacOS, Linux, Other
+  };
+
+  // cached result of OS detection
+  protected static OSType detectedOS;
+
+  /**
+   * detect the operating system from the os.name System property and cache
+   * the result
+   * 
+   * @returns - the operating system detected
+   */
+  public static OSType getOperatingSystemType() {
+    if (detectedOS == null) {
+      String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+      if ((OS.indexOf("mac") >= 0) || (OS.indexOf("darwin") >= 0)) {
+        detectedOS = OSType.MacOS;
+      } else if (OS.indexOf("win") >= 0) {
+        detectedOS = OSType.Windows;
+      } else if (OS.indexOf("nux") >= 0) {
+        detectedOS = OSType.Linux;
+      } else {
+        detectedOS = OSType.Other;
+      }
+    }
+    return detectedOS;
   }
 }
