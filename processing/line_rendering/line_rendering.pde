@@ -18,11 +18,11 @@ public static int debuglevel = 1; // between 0-2
 //   * SPACE to save
 //   * press 'R' to restart with random settings
 //   * press 'I' for interactive mode, mouse click or drag starts line (longer mouse movements take longer to calculate)
-//   * click to view coordinates at that point
+//   * click to view coordinates at that point and the current frame
 // NOTE: small changes to stroke_len, angles_no, stroke_alpha may have dramatic effect
 
 // image filename
-String filename = "Tree-In-Rain-Vertical";
+String filename = "Tree-In-Rain";
 String fileext = ".png";
 String foldername = "./";
 String foldernameabs = "./Desktop/Tech-Image-Effects/processing/line_rendering/";
@@ -37,7 +37,7 @@ int angles_no = 43; // number of directions the stroke can be drawn; 2 and above
 int segments = 770; // number of segments in a single thread (default 500)
 float stroke_width = 2.0613706; // width of the stroke; 0.5 - 3 (default 1)
 int stroke_alpha = 124; // alpha channel of the stroke; 30 - 200 (default 100)
-int maxframes = 5000; // the number of frames to render before starting a new rendering (with the same settings)
+int maxframes = 2000; // the number of frames to render before starting a new rendering (with the same settings)
 
 // Settings can be copied from the console and pasted in the space below. (Remember to comment out the settings above before running the script) 
 
@@ -330,7 +330,7 @@ void mouseClicked() {
   }
 }
 
-void printParameters() { // The output parameters can be easily copied and pasted into the beginning of this script
+void printParameters() { // Prints current rendering parameters; the parameters can be easily copied and pasted into the beginning of this script
   String s_stat_type = "";
   switch(stat_type) {
   case DIST: 
@@ -389,15 +389,15 @@ void keyPressed() {
   default: 
     break;
   }
-  if (keyCode == 32) {
+  if (keyCode == 32) { // Pressing SPACE saves a snapshot of the current frame to a folder in the project root directory with the current settings written in the filename
     buffer.save(foldername + filename + "/res_" + filename + "_" + sessionid + "_stat=" + s_stat_type + "_len=" + stroke_len + "_ang=" + angles_no + "_seg=" + segments + "_width=" + stroke_width + "_alpha=" + stroke_alpha + "_" + hex((int)random(0xffff), 4)+fileext);
-    print("image saved");
-  } else if (key == 'i') {
+    println("image saved | frame " + frame);
+  } else if (key == 'i') { // Pressing I toggles interactive mode
     interactive = !interactive;
     println("interactive mode: " + (interactive?"ON":"OFF"));
-  } else if (key == 'r') {
+  } else if (key == 'r') { // Pressing R restarts the rendering with random settings
     autorestart = false; // Manually restarting the rendering disables automatic restarting of the rendering for the current session
-    if (frame < 300) {
+    if (frame < 300) { // Manually restarting the rendering is only possible within the first 300 frames of generation
       stat_type = random(1)<0.05?(int)random(1, 4):random(1)<0.3?ABSDIST:random(1)<0.5?ABSDIST2:DIST;
       stroke_len = (int)random(1, 15);
       angles_no = (int)random(2, 50);
