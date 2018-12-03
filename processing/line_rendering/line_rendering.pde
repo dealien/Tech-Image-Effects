@@ -24,9 +24,6 @@ public static int debuglevel = 1; // between 0-2
 // image filename
 String filename = "Tree-In-Rain";
 String fileext = ".png";
-String foldername = "./";
-String foldernameabs = "./Desktop/Tech-Image-Effects/processing/line_rendering/";
-String foldernameabsnd = "/Desktop/Tech-Image-Effects/processing/line_rendering/";
 
 Boolean writeframes = true; // Determines whether rendered frames will be written to the disk
 Boolean autorestart = true; // If this is false, the rendering will continue past the set maxframes
@@ -56,14 +53,16 @@ String sessionid;
 
 int n = 1;
 int frame = 1;
+String pwd;
 String framedir;
-String framedirabs;
 String videodir;
 
 int drawnum = 1;
 
 void settings() {
-  PImage oimg = loadImage(foldername+filename+fileext);
+  pwd = sketchPath()+"\\";
+  println("pwd = "+pwd);
+  PImage oimg = loadImage(pwd+filename+fileext);
   int ow = oimg.width;
   int oh = oimg.height;
   if (ow % 2 != 0 ) {
@@ -99,8 +98,9 @@ void settings() {
 }
 
 void setup() {
+  pwd = sketchPath()+"\\";
   sessionid = hex((int)random(0xffff), 4);
-  PImage oimg = loadImage(foldername+filename+fileext);
+  PImage oimg = loadImage(pwd+filename+fileext);
   int ow = oimg.width;
   int oh = oimg.height;
   if (ow % 2 != 0 ) {
@@ -163,6 +163,7 @@ int calcDiff(PImage img1, PImage img2) {
 }
 
 void drawMe() {
+  pwd = sketchPath()+"\\";
   buffer.beginDraw();
   //draw whole segment using current color
   buffer.stroke(img.get(currx, curry), stroke_alpha);
@@ -240,20 +241,15 @@ void drawMe() {
 
   if (writeframes == true) {
     if (frame == 1) {
-      if (!new File("./Desktop/Tech-Image-Effects/").exists()) { 
-        if (debuglevel > 0) {
-          println("Script folder is not on the desktop. Changing references to Downloads...");
-        }
-        foldernameabs = "./Downloads/Tech-Image-Effects/processing/line_rendering/";
-        foldernameabsnd = "/Downloads/Tech-Image-Effects/processing/line_rendering/";
-      }
-      framedir = foldername + "Rendered/" + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
-      framedirabs = foldernameabs + "Rendered/" + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
-      videodir = foldernameabs + "Videos/"; 
+      framedir = pwd + "Rendered/" + filename + "/" + filename + "_Rendered_Frames_" + sessionid + "/";
+      videodir = pwd + "Videos/"; 
+      println();
+      println("framedir = "+framedir);
+      println("videodir = "+videodir);
       PrintWriter writer = null;
       try {
-        File compiler = new File(framedirabs + "compile.sh");
-        File f = new File(framedirabs);
+        File compiler = new File(framedir + "compile.sh");
+        File f = new File(framedir);
 
         if (debuglevel > 0) {
           println("f = " + f);
@@ -390,7 +386,7 @@ void keyPressed() {
     break;
   }
   if (keyCode == 32) { // Pressing SPACE saves a snapshot of the current frame to a folder in the project root directory with the current settings written in the filename
-    buffer.save(foldername + filename + "/res_" + filename + "_" + sessionid + "_stat=" + s_stat_type + "_len=" + stroke_len + "_ang=" + angles_no + "_seg=" + segments + "_width=" + stroke_width + "_alpha=" + stroke_alpha + "_" + hex((int)random(0xffff), 4)+fileext);
+    buffer.save(pwd + filename + "/res_" + filename + "_" + sessionid + "_stat=" + s_stat_type + "_len=" + stroke_len + "_ang=" + angles_no + "_seg=" + segments + "_width=" + stroke_width + "_alpha=" + stroke_alpha + "_" + hex((int)random(0xffff), 4)+fileext);
     println("image saved | frame " + frame);
   } else if (key == 'i') { // Pressing I toggles interactive mode
     interactive = !interactive;
