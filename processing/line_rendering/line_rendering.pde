@@ -22,13 +22,13 @@ public static int debuglevel = 1; // between 0-2
 // NOTE: small changes to stroke_len, angles_no, stroke_alpha may have dramatic effect
 
 // image filename
-String filename = "Adam-Before-Automated";
+String filename = "Tree-In-Rain-Vertical";
 String fileext = ".png";
 String foldername = "./";
 String foldernameabs = "./Desktop/Tech-Image-Effects/processing/line_rendering/";
 String foldernameabsnd = "/Desktop/Tech-Image-Effects/processing/line_rendering/";
 
-Boolean writeframes = false; // Determines whether rendered frames will be written to the disk
+Boolean writeframes = true; // Determines whether rendered frames will be written to the disk
 Boolean autorestart = true; // If this is false, the rendering will continue past the set maxframes
 
 int stat_type = ABSDIST2; // type of diff calculation: fast: ABSDIST, ABSDIST2, DIST, slow: HUE, SATURATION, BRIGHTNESS
@@ -37,7 +37,7 @@ int angles_no = 43; // number of directions the stroke can be drawn; 2 and above
 int segments = 770; // number of segments in a single thread (default 500)
 float stroke_width = 2.0613706; // width of the stroke; 0.5 - 3 (default 1)
 int stroke_alpha = 124; // alpha channel of the stroke; 30 - 200 (default 100)
-int maxframes = 20; // the number of frames to render before starting a new rendering (with the same settings)
+int maxframes = 5000; // the number of frames to render before starting a new rendering (with the same settings)
 
 // Settings can be copied from the console and pasted in the space below. (Remember to comment out the settings above before running the script) 
 
@@ -82,11 +82,7 @@ void settings() {
 
   // calculate window size
   int max_display_size;
-  if (img.width > img.height) {
-    max_display_size = displayWidth;
-  } else {
-    max_display_size = displayHeight;
-  }
+  max_display_size = displayWidth;
 
   float ratio = (float)img.width/(float)img.height;
   int neww, newh;
