@@ -29,8 +29,8 @@ Boolean writeframes = true; // Determines whether rendered frames will be writte
 Boolean autorestart = true; // If this is false, the rendering will continue past the set maxframes
 
 int stat_type = ABSDIST2; // type of diff calculation: fast: ABSDIST, ABSDIST2, DIST, slow: HUE, SATURATION, BRIGHTNESS
-int stroke_len = 9; // length of the stroke; 1 and above (default 5)
-int angles_no = 43; // number of directions the stroke can be drawn; 2 and above (default 30)
+int stroke_len = 6; // length of the stroke; 1 and above (default 5)
+int angles_no = 7; // number of directions the stroke can be drawn; 2 and above (default 30)
 int segments = 770; // number of segments in a single thread (default 500)
 float stroke_width = 2.0613706; // width of the stroke; 0.5 - 3 (default 1)
 int stroke_alpha = 124; // alpha channel of the stroke; 30 - 200 (default 100)
@@ -400,7 +400,7 @@ void printParameters() { // Prints current rendering parameters; the parameters 
   println("int segments= " + segments +";");
   println("float stroke_width= " + stroke_width +";");
   println("int stroke_alpha= " + stroke_alpha +";");
-  println("int maxframes= " + maxframes);
+  println("int maxframes= " + maxframes +";");
   println("");
 }
 
