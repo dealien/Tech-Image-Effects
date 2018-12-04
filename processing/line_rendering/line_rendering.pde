@@ -60,7 +60,7 @@ String videodir;
 int drawnum = 1;
 
 void settings() {
-  pwd = sketchPath()+"\\";
+  pwd = sketchPath()+"/";
   println("pwd = "+pwd);
   PImage oimg = loadImage(pwd+filename+fileext);
   int ow = oimg.width;
@@ -98,7 +98,7 @@ void settings() {
 }
 
 void setup() {
-  pwd = sketchPath()+"\\";
+  pwd = sketchPath()+"/";
   sessionid = hex((int)random(0xffff), 4);
   PImage oimg = loadImage(pwd+filename+fileext);
   int ow = oimg.width;
@@ -163,7 +163,7 @@ int calcDiff(PImage img1, PImage img2) {
 }
 
 void drawMe() {
-  pwd = sketchPath()+"\\";
+  pwd = sketchPath()+"/";
   buffer.beginDraw();
   //draw whole segment using current color
   buffer.stroke(img.get(currx, curry), stroke_alpha);
