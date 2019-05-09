@@ -22,19 +22,19 @@ public static int debuglevel = 1; // between 0-2
 // NOTE: small changes to stroke_len, angles_no, stroke_alpha may have dramatic effect
 
 // image filename
-String filename = "Tree-In-Rain";
-String fileext = ".png";
+String filename = "SHD-Logo";
+String fileext = ".jpg";
 
 Boolean writeframes = true; // Determines whether rendered frames will be written to the disk
 Boolean autorestart = true; // If this is false, the rendering will continue past the set maxframes
 
-int stat_type = ABSDIST2; // type of diff calculation: fast: ABSDIST, ABSDIST2, DIST, slow: HUE, SATURATION, BRIGHTNESS
-int stroke_len = 6; // length of the stroke; 1 and above (default 5)
-int angles_no = 7; // number of directions the stroke can be drawn; 2 and above (default 30)
-int segments = 770; // number of segments in a single thread (default 500)
-float stroke_width = 2.0613706; // width of the stroke; 0.5 - 3 (default 1)
-int stroke_alpha = 124; // alpha channel of the stroke; 30 - 200 (default 100)
-int maxframes = 2000; // the number of frames to render before starting a new rendering (with the same settings)
+int stat_type = ABSDIST2; // color diff calculation method: fast: ABSDIST, ABSDIST2, DIST, slow: HUE, SATURATION, BRIGHTNESS
+int stroke_len = 12; // length of the stroke; 1 and above (default 5)
+int angles_no = 39; // number of directions the stroke can be drawn; 2 and above (default 30)
+int segments = 1029; // number of segments in a single thread (default 500)
+float stroke_width = 1.5; // width of the stroke; 0.5 - 3 (default 1)
+int stroke_alpha = 142; // alpha channel of the stroke; 30 - 200 (default 100)
+int maxframes = 5000; // the number of frames to render before starting a new rendering (with the same settings)
 
 // Settings can be copied from the console and pasted in the space below. (Remember to comment out the settings above before running the script) 
 
@@ -165,7 +165,7 @@ int calcDiff(PImage img1, PImage img2) {
 void drawMe() {
   pwd = sketchPath()+"/";
   buffer.beginDraw();
-  //draw whole segment using current color
+  // draw whole segment using current color
   buffer.stroke(img.get(currx, curry), stroke_alpha);
 
   for (int iter=0; iter<segments; iter++) {
@@ -247,7 +247,7 @@ void drawMe() {
       println("framedir = "+framedir);
       println("videodir = "+videodir);
       PrintWriter writer = null;
-      try {
+      try { // Creates a directory for rendered frame output and create a compiler script
         String cname="compile.sh";
         OsCheck.OSType ostype=OsCheck.getOperatingSystemType();
         println("os = "+ostype);
@@ -338,7 +338,10 @@ void drawMe() {
   frame++;
 
   if (frame > maxframes) {
+    println("");
+    println("####################");
     println("Reached frame limit. Beginning new rendering...");
+    println("");
     frame = 1;
     reinit();
     printParameters();
@@ -370,7 +373,7 @@ void mouseClicked() {
   }
 }
 
-void printParameters() { // Prints current rendering parameters; the parameters can be easily copied and pasted into the beginning of this script
+void printParameters() { // Prints current rendering parameters in a format that can be easily copied into the beginning of this script
   String s_stat_type = "";
   switch(stat_type) {
   case DIST: 
@@ -445,6 +448,10 @@ void keyPressed() {
       stroke_width = random(1)<0.7?1.0:random(0.5, 3);
       stroke_alpha = (int)random(50, 200);
       frame = 1;
+      println("");
+      println("####################");
+      println("Rendering manually restarted. Beginning new rendering...");
+      println("");
       reinit();
       printParameters();
     } else {
