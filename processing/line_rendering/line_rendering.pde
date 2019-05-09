@@ -332,6 +332,30 @@ void drawMe() {
           System.err.println("Failed to create compiler script");
         }
       }
+      
+      String sname = "settings.txt";
+      File settingsfile = new File(framedir + sname);
+      
+      try{
+        if (debuglevel > 0) {
+        println("Saving settings to " + settingsfile);
+                  if (settingsfile.createNewFile() || settingsfile.isFile()) {
+            println(settingsfile + " is a file");
+          } else {
+            println(settingsfile + " is a directory");
+          }
+      }settingsfile.createNewFile();
+      writer = new PrintWriter(new FileWriter(settingsfile));
+        writer.println("int stat_type= " + statType() +";");
+  writer.println("int stroke_len= " + stroke_len +";");
+  writer.println("int angles_no= " + angles_no +";");
+  writer.println("int segments= " + segments +";");
+  writer.println("float stroke_width= " + stroke_width +";");
+  writer.println("int stroke_alpha= " + stroke_alpha +";");
+  writer.println("int maxframes= " + maxframes +";");}catch (IOException e) {
+    System.err.println("IOException: " + e.getMessage());
+  }finally{  
+writer.close();}
     }
     buffer.save(framedir + "/" + filename + "_" + String.format("%06d", frame) + ".png");
   }
@@ -373,8 +397,8 @@ void mouseClicked() {
   }
 }
 
-void printParameters() { // Prints current rendering parameters in a format that can be easily copied into the beginning of this script
-  String s_stat_type = "";
+ String statType(){
+    String s_stat_type = "";
   switch(stat_type) {
   case DIST: 
     s_stat_type = "DIST"; 
@@ -397,7 +421,11 @@ void printParameters() { // Prints current rendering parameters in a format that
   default: 
     break;
   }
-  println("int stat_type= " + s_stat_type +";");
+  return  s_stat_type;
+}
+
+void printParameters() { // Prints current rendering parameters in a format that can be easily copied into the beginning of this script
+  println("int stat_type= " + statType() +";");
   println("int stroke_len= " + stroke_len +";");
   println("int angles_no= " + angles_no +";");
   println("int segments= " + segments +";");
@@ -409,31 +437,8 @@ void printParameters() { // Prints current rendering parameters in a format that
 
 void keyPressed() {
   println("");
-  String s_stat_type = "";
-  switch(stat_type) {
-  case DIST: 
-    s_stat_type = "DIST"; 
-    break;
-  case ABSDIST: 
-    s_stat_type = "ABSDIST"; 
-    break;
-  case ABSDIST2: 
-    s_stat_type = "ABSDIST2"; 
-    break;
-  case HUE: 
-    s_stat_type = "HUE"; 
-    break;
-  case SATURATION: 
-    s_stat_type = "SATURATION"; 
-    break;
-  case BRIGHTNESS: 
-    s_stat_type = "BRIGHTNESS"; 
-    break;
-  default: 
-    break;
-  }
   if (keyCode == 32) { // Pressing SPACE saves a snapshot of the current frame to a folder in the project root directory with the current settings written in the filename
-    buffer.save(pwd + filename + "/res_" + filename + "_" + sessionid + "_stat=" + s_stat_type + "_len=" + stroke_len + "_ang=" + angles_no + "_seg=" + segments + "_width=" + stroke_width + "_alpha=" + stroke_alpha + "_" + hex((int)random(0xffff), 4)+fileext);
+    buffer.save(pwd + filename + "/res_" + filename + "_" + sessionid + "_stat=" + statType() + "_len=" + stroke_len + "_ang=" + angles_no + "_seg=" + segments + "_width=" + stroke_width + "_alpha=" + stroke_alpha + "_" + hex((int)random(0xffff), 4)+fileext);
     println("image saved | frame " + frame);
   } else if (key == 'i') { // Pressing I toggles interactive mode
     interactive = !interactive;
