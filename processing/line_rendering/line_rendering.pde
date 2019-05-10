@@ -22,20 +22,21 @@ public static int debuglevel = 1; // between 0-2
 // NOTE: small changes to stroke_len, angles_no, stroke_alpha may have dramatic effect
 
 // image filename
-String filename = "ISAC-Small";
-String fileext = ".jpg";
+String filename = "Living-Room-Normal";
+String fileext = ".png";
 
 Boolean writeframes = true; // Determines whether rendered frames will be written to the disk
 Boolean autorestart = true; // If false, the rendering will continue past the set maxframes
+Boolean autorandom = true; // If true, randomizes the settings after an auto restart
 Boolean maxcanvas = false; // If false and the image is smaller than the display, the canvas will be the size of the image; otherwise it will be as large as possible within the display dimensions
 
 int stat_type = ABSDIST2; // color diff calculation method: fast: ABSDIST, ABSDIST2, DIST, slow: HUE, SATURATION, BRIGHTNESS
 int stroke_len = 12; // length of the stroke; 1 and above (default 5)
 int angles_no = 39; // number of directions the stroke can be drawn; 2 and above (default 30)
 int segments = 1029; // number of segments in a single thread (default 500)
-float stroke_width = 1.5; // width of the stroke; 0.5 - 3 (default 1)
+float stroke_width = 1.0; // width of the stroke; 0.5 - 3 (default 1)
 int stroke_alpha = 142; // alpha channel of the stroke; 30 - 200 (default 100)
-int maxframes = 2000; // the number of frames to render before starting a new rendering (with the same settings)
+int maxframes = 1000; // the number of frames to render before starting a new rendering (with the same settings)
 
 // Settings can be copied from the console and pasted in the space below. (Remember to comment out the settings above before running the script) 
 
@@ -371,12 +372,21 @@ void drawMe() {
   }
   frame++;
 
-  if (frame > maxframes) {
+  if (frame > maxframes && autorestart) {
     println("");
     println("####################");
     println("Reached frame limit. Beginning new rendering...");
     println("");
+    if (autorandom) {
+      stat_type = random(1) < 0.05 ? (int) random(1, 4) : random(1) < 0.3 ? ABSDIST : random(1) < 0.5 ? ABSDIST2 : DIST;
+      stroke_len = (int) random(1, 15);
+      angles_no = (int) random(2, 50);
+      segments = (int) random(50, 1500);
+      stroke_width = random(1) < 0.7 ? 1.0 : random(0.5, 3);
+      stroke_alpha = (int) random(50, 200);
+    }
     frame = 1;
+    sessionid = hex((int) random(0xffff), 4);
     reinit();
     printParameters();
   }
