@@ -458,7 +458,7 @@ void printParameters() { // Prints current rendering parameters in a format that
 void keyPressed() {
   println("");
   if (keyCode == 32) { // Pressing SPACE saves a snapshot of the current frame to a folder in the project root directory with the current settings written in the filename
-    buffer.save(pwd + filename + "/res_" + filename + "_" + sessionid + "_stat=" + statType() + "_len=" + stroke_len + "_ang=" + angles_no + "_seg=" + segments + "_width=" + stroke_width + "_alpha=" + stroke_alpha + "_" + hex((int) random(0xffff), 4) + fileext);
+    buffer.save(pwd + "Snapshots/" + filename + "/res_" + filename + "_" + sessionid + "_stat=" + statType() + "_len=" + stroke_len + "_ang=" + angles_no + "_seg=" + segments + "_width=" + stroke_width + "_alpha=" + stroke_alpha + "_" + hex((int) random(0xffff), 4) + fileext);
     println("image saved | frame " + frame);
   } else if (key == 'i') { // Pressing I toggles interactive mode
     interactive = !interactive;
