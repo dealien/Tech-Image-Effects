@@ -1,1 +1,1 @@
-for /f "delims=" %%i in ('dir c: d: /s /b ^| findstr /i compile.bat') do call %%i
+for /f "delims=" %%i in ('dir /s /b ^| findstr /i compile.bat') do call %%i
