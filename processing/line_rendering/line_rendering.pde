@@ -244,6 +244,8 @@ void drawMe() {
 
   buffer.endDraw();
   image(buffer, 0, 0, width, height);
+  textSize(12);
+  text("frame " + frame, 5, 16);
 
   if (writeframes == true) {
     if (frame == 1) {
