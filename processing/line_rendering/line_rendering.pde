@@ -26,7 +26,7 @@ String filename = "Living-Room-Normal";
 String fileext = ".png";
 
 Boolean writeframes = true; // Determines whether rendered frames will be written to the disk
-Boolean autorestart = true; // If false, the rendering will continue past the set maxframes
+Boolean autorestart = true; // If true, the rendering will be restarted upon reaching the set maxframes
 Boolean autorandom = true; // If true, randomizes the settings after an auto restart
 Boolean maxcanvas = false; // If false and the image is smaller than the display, the canvas will be the size of the image; otherwise it will be as large as possible within the display dimensions
 
