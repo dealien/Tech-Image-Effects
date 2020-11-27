@@ -22,7 +22,7 @@ public static int debuglevel = 1; // between 0-2
 // NOTE: small changes to stroke_len, angles_no, stroke_alpha may have dramatic effect
 
 // image filename
-String filename = "Living-Room-Normal";
+String filename = "Doctors-Waiting-Room";
 String fileext = ".png";
 
 Boolean writeframes = true; // Determines whether rendered frames will be written to the disk
@@ -245,7 +245,23 @@ void drawMe() {
   buffer.endDraw();
   image(buffer, 0, 0, width, height);
   textSize(12);
-  text("frame " + frame, 5, 16);
+  // Write info about the current rendering in the top left of the window. This text is not saved to the buffer or rendered images.   
+  String[] textout = {
+    "frame:        " + frame,
+    "autorestart:  " + autorestart,
+    "aurorandom:   " + autorandom,
+    "maxframes:    " + maxframes,
+    "stat_type:    " + stat_type,
+    "stroke_len:   " + stroke_len,
+    "angles_no:    " + angles_no,
+    "segments:     " + segments,
+    "stroke_width: " + stroke_width,
+    "stroke_alpha: " + stroke_alpha,
+  };
+  int lineheight = 16;
+  for (int i=0; i<textout.length; i++){
+    text(textout[i], 5, lineheight*(i+1));
+  }
 
   if (writeframes == true) {
     if (frame == 1) {
