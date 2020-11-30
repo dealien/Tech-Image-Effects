@@ -8,8 +8,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.List;
 
-public static int debuglevel = 1; // between 0-2
-
 // Used during The Shape of Things (2017-18)
 
 // Usage:
@@ -21,8 +19,10 @@ public static int debuglevel = 1; // between 0-2
 //   * click to view coordinates at that point and the current frame
 // NOTE: small changes to stroke_len, angles_no, stroke_alpha may have dramatic effect
 
+public static int debuglevel = 1; // between 0-2
+
 // image filename
-String filename = "Doctors-Waiting-Room";
+String filename = "Living-Room-Normal";
 String fileext = ".png";
 
 Boolean writeframes = true; // Determines whether rendered frames will be written to the disk
@@ -36,7 +36,7 @@ int angles_no = 39; // number of directions the stroke can be drawn; 2 and above
 int segments = 1029; // number of segments in a single thread (default 500)
 float stroke_width = 1.0; // width of the stroke; 0.5 - 3 (default 1)
 int stroke_alpha = 142; // alpha channel of the stroke; 30 - 200 (default 100)
-int maxframes = 1000; // the number of frames to render before starting a new rendering (with the same settings)
+int maxframes = 2000; // the number of frames to render before starting a new rendering (with the same settings)
 
 // Settings can be copied from the console and pasted in the space below. (Remember to comment out the settings above before running the script) 
 
@@ -47,6 +47,7 @@ color background_color = color(0, 0, 0); // RGB (default 255,255,255)
 boolean interactive = false; // (default false)
 
 PImage img;
+PFont mono;
 
 // working buffer
 PGraphics buffer;
@@ -106,6 +107,8 @@ void settings() {
 void setup() {
   pwd = sketchPath() + "/";
   sessionid = hex((int) random(0xffff), 4);
+  mono = createFont("Consolas", 12);
+  textFont(mono);
   PImage oimg = loadImage(pwd + filename + fileext);
   int ow = oimg.width;
   int oh = oimg.height;
@@ -244,9 +247,10 @@ void drawMe() {
 
   buffer.endDraw();
   image(buffer, 0, 0, width, height);
-  textSize(12);
   // Write info about the current rendering in the top left of the window. This text is not saved to the buffer or rendered images.   
   String[] textout = {
+    "file:         " + filename,
+    "session id:   " + sessionid,
     "frame:        " + frame,
     "autorestart:  " + autorestart,
     "aurorandom:   " + autorandom,

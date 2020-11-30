@@ -5,3 +5,6 @@ Thumbs.db
 res_*
 *Adam*
 *.autosave
+build-tmp/
+*.sublime-project
+*.sublime-workspace
