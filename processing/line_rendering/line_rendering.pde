@@ -28,6 +28,7 @@ String fileext = ".png";
 Boolean writeframes = true; // Determines whether rendered frames will be written to the disk
 Boolean autorestart = true; // If true, the rendering will be restarted upon reaching the set maxframes
 Boolean autorandom = true; // If true, randomizes the settings after an auto restart
+Boolean randomstart = true; // If true, randomizes starting parameters, ignoring any set below
 Boolean maxcanvas = false; // If false and the image is smaller than the display, the canvas will be the size of the image; otherwise it will be as large as possible within the display dimensions
 
 int stat_type = ABSDIST2; // color diff calculation method: fast: ABSDIST, ABSDIST2, DIST, slow: HUE, SATURATION, BRIGHTNESS
@@ -105,6 +106,9 @@ void settings() {
 }
 
 void setup() {
+  if (randomstart) {
+    randomizeParameters();
+  }
   pwd = sketchPath() + "/";
   sessionid = hex((int) random(0xffff), 4);
   mono = createFont("Consolas", 12);
@@ -254,6 +258,7 @@ void drawMe() {
     "frame:        " + frame,
     "autorestart:  " + autorestart,
     "aurorandom:   " + autorandom,
+    "randomstart:  " + randomstart,
     "maxframes:    " + maxframes,
     "stat_type:    " + stat_type,
     "stroke_len:   " + stroke_len,
@@ -400,12 +405,7 @@ void drawMe() {
     println("Reached frame limit. Beginning new rendering...");
     println("");
     if (autorandom) {
-      stat_type = random(1) < 0.05 ? (int) random(1, 4) : random(1) < 0.3 ? ABSDIST : random(1) < 0.5 ? ABSDIST2 : DIST;
-      stroke_len = (int) random(1, 15);
-      angles_no = (int) random(2, 50);
-      segments = (int) random(50, 1500);
-      stroke_width = random(1) < 0.7 ? 1.0 : random(0.5, 3);
-      stroke_alpha = (int) random(50, 200);
+      randomizeParameters();
     }
     frame = 1;
     sessionid = hex((int) random(0xffff), 4);
@@ -464,6 +464,15 @@ String statType() {
     break;
   }
   return s_stat_type;
+}
+
+void randomizeParameters() {
+      stat_type = random(1) < 0.05 ? (int) random(1, 4) : random(1) < 0.3 ? ABSDIST : random(1) < 0.5 ? ABSDIST2 : DIST;
+      stroke_len = (int) random(1, 15);
+      angles_no = (int) random(2, 50);
+      segments = (int) random(50, 1500);
+      stroke_width = random(1) < 0.7 ? 1.0 : random(0.5, 3);
+      stroke_alpha = (int) random(50, 200);
 }
 
 void printParameters() { // Prints current rendering parameters in a format that can be easily copied into the beginning of this script
