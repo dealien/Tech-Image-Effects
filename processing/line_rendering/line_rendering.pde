@@ -7,6 +7,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 
 // Used during The Shape of Things (2017-18)
 
@@ -47,12 +50,11 @@ color background_color = color(0, 0, 0); // RGB (default 255,255,255)
 
 boolean interactive = false; // (default false)
 
-PImage img;
-PFont mono;
-
 // working buffer
 PGraphics buffer;
 
+PImage img;
+PFont mono;
 String sessionid;
 
 int n = 1;
@@ -60,6 +62,8 @@ int frame = 1;
 String pwd;
 String framedir;
 String videodir;
+long frameStart, frameEnd, renderStart, renderEnd;
+Queue<Double> renderTimes = new LinkedList<Double>();
 
 int drawnum = 1;
 
@@ -140,6 +144,7 @@ void setup() {
 }
 
 void reinit() {
+  renderStart = System.nanoTime();
   buffer.beginDraw();
   buffer.strokeWeight(stroke_width);
   buffer.background(background_color);
@@ -251,26 +256,6 @@ void drawMe() {
 
   buffer.endDraw();
   image(buffer, 0, 0, width, height);
-  // Write info about the current rendering in the top left of the window. This text is not saved to the buffer or rendered images.   
-  String[] textout = {
-    "file:         " + filename,
-    "session id:   " + sessionid,
-    "frame:        " + frame,
-    "autorestart:  " + autorestart,
-    "aurorandom:   " + autorandom,
-    "randomstart:  " + randomstart,
-    "maxframes:    " + maxframes,
-    "stat_type:    " + stat_type,
-    "stroke_len:   " + stroke_len,
-    "angles_no:    " + angles_no,
-    "segments:     " + segments,
-    "stroke_width: " + stroke_width,
-    "stroke_alpha: " + stroke_alpha,
-  };
-  int lineheight = 16;
-  for (int i=0; i<textout.length; i++){
-    text(textout[i], 5, lineheight*(i+1));
-  }
 
   if (writeframes == true) {
     if (frame == 1) {
@@ -397,8 +382,8 @@ void drawMe() {
     }
     buffer.save(framedir + "/" + filename + "_" + String.format("%06d", frame) + ".png");
   }
-  frame++;
 
+  frame++;
   if (frame > maxframes && autorestart) {
     println("");
     println("####################");
@@ -416,10 +401,59 @@ void drawMe() {
 
 void draw() {
   if (!interactive) {
+    frameStart = System.nanoTime();
     currx = (int) random(img.width);
     curry = (int) random(img.height);
     drawMe();
+    frameEnd = System.nanoTime();
+    drawOverlay();
   }
+}
+
+void drawOverlay() {
+  // Write info about the current rendering in the top left of the window. This text is not saved to the buffer or rendered images.   
+  double elapsedTime = (double)(frameEnd - frameStart) / 1000000; // Get the elapsed time in milliseconds
+  renderTimes.add(elapsedTime);
+  if (renderTimes.size() > 10) {
+    renderTimes.remove();
+  }
+  double sum = 0;
+  for (int i = 0; i < renderTimes.size(); i++) {
+    double n = renderTimes.remove();
+    sum += n;
+    renderTimes.add(n);
+  }
+  double avg = sum / renderTimes.size();
+  String[] textout = {
+    "file:               " + filename,
+    "session id:         " + sessionid,
+    "frame:              " + frame,
+    "prev. render time:  " + (double)Math.round(elapsedTime*100d)/100d + " ms",
+    "avg render time:    " + (double)Math.round(avg*100d)/100d + " ms",
+    // "total render time : " + formatInterval(System.nanoTime()-renderStart),
+    "autorestart:        " + autorestart,
+    "aurorandom:         " + autorandom,
+    "randomstart:        " + randomstart,
+    "maxframes:          " + maxframes,
+    "stat_type:          " + stat_type,
+    "stroke_len:         " + stroke_len,
+    "angles_no:          " + angles_no,
+    "segments:           " + segments,
+    "stroke_width:       " + stroke_width,
+    "stroke_alpha:       " + stroke_alpha,
+  };
+  int lineheight = 16;
+  for (int i=0; i<textout.length; i++){
+    text(textout[i], 5, lineheight*(i+1));
+  }
+}
+
+private static String formatInterval(final long l) {
+    final long hr = TimeUnit.MILLISECONDS.toHours(l);
+    final long min = TimeUnit.MILLISECONDS.toMinutes(l - TimeUnit.HOURS.toMillis(hr));
+    final long sec = TimeUnit.MILLISECONDS.toSeconds(l - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min));
+    final long ms = TimeUnit.MILLISECONDS.toMillis(l - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min) - TimeUnit.SECONDS.toMillis(sec));
+    return String.format("%02d:%02d:%02d.%03d", hr, min, sec, ms);
 }
 
 void mouseDragged() {
