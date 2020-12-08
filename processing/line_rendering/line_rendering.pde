@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public static int debuglevel = 1; // between 0-2
 
 // image filename
-String filename = "Living-Room-Normal";
+String filename = "Auditorium-Patio-Flat";
 String fileext = ".png";
 
 Boolean writeframes = true; // Determines whether rendered frames will be written to the disk
@@ -207,6 +207,7 @@ void drawMe() {
     // start with random angle
     int i = (int) random(angles_no);
     int iterangles = angles_no;
+    // TODO: Consider adding an option to randomize the order of sintab[] and costab[] for every line. 
 
     while (iterangles--> 0) {
       // take end points
@@ -317,7 +318,7 @@ void drawMe() {
             writer.println("if not exist %videodir% mkdir %videodir%");
             writer.println("cd %videodir%");
             writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"%d%\\" + filename + "_%%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"%videodir%\\" + filename + " " + sessionid + ".mp4\"");
-            // writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"%d%\\" + filename + "_%%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"%videodir%\\" + filename + " " + sessionid + " Reverse.mp4\"");
+            writer.println("rem ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"%d%\\" + filename + "_%%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"%videodir%\\" + filename + " " + sessionid + " Reverse.mp4\"");
             break;
           }
         case MacOS:
@@ -330,7 +331,7 @@ void drawMe() {
             writer.println("cd $(dirname $nd)");
             writer.println("mkdir Videos");
             writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"./Videos/" + filename + " " + sessionid + ".mp4\"");
-            // writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"./Videos/" + filename + " " + sessionid + " Reverse.mp4\"");
+            writer.println("# ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"./Videos/" + filename + " " + sessionid + " Reverse.mp4\"");
             break;
           }
         case Other:
