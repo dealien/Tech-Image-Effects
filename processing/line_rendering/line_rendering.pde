@@ -529,7 +529,7 @@ void keyPressed() {
     interactive = !interactive;
     println("interactive mode: " + (interactive ? "ON" : "OFF"));
   } else if (key == 'r') { // Pressing R restarts the rendering with random settings
-    autorestart = false; // Manually restarting the rendering disables automatic restarting of the rendering for the current session
+    // autorestart = false; // Manually restarting the rendering disables automatic restarting of the rendering for the current session
     if (frame < 300) { // Manually restarting the rendering is only possible within the first 300 frames of generation
       stat_type = random(1) < 0.05 ? (int) random(1, 4) : random(1) < 0.3 ? ABSDIST : random(1) < 0.5 ? ABSDIST2 : DIST;
       stroke_len = (int) random(1, 15);
