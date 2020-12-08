@@ -317,7 +317,7 @@ void drawMe() {
             writer.println("if not exist %videodir% mkdir %videodir%");
             writer.println("cd %videodir%");
             writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"%d%\\" + filename + "_%%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"%videodir%\\" + filename + " " + sessionid + ".mp4\"");
-            writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"%d%\\" + filename + "_%%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"%videodir%\\" + filename + " " + sessionid + " Reverse.mp4\"");
+            // writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"%d%\\" + filename + "_%%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"%videodir%\\" + filename + " " + sessionid + " Reverse.mp4\"");
             break;
           }
         case MacOS:
@@ -330,7 +330,7 @@ void drawMe() {
             writer.println("cd $(dirname $nd)");
             writer.println("mkdir Videos");
             writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"./Videos/" + filename + " " + sessionid + ".mp4\"");
-            writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"./Videos/" + filename + " " + sessionid + " Reverse.mp4\"");
+            // writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"$d/" + filename + "_%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"./Videos/" + filename + " " + sessionid + " Reverse.mp4\"");
             break;
           }
         case Other:
