@@ -426,35 +426,35 @@ void drawOverlay() {
   }
   double avg = sum / renderTimes.size();
   String[] textout = {
-    "file:               " + filename,
-    "session id:         " + sessionid,
-    "frame:              " + frame,
-    "prev. render time:  " + (double)Math.round(elapsedTime*100d)/100d + " ms",
-    "avg render time:    " + (double)Math.round(avg*100d)/100d + " ms",
+    "file:               " + filename, 
+    "session id:         " + sessionid, 
+    "frame:              " + frame, 
+    "prev. render time:  " + (double)Math.round(elapsedTime*100d)/100d + " ms", 
+    "avg render time:    " + (double)Math.round(avg*100d)/100d + " ms", 
     // "total render time : " + formatInterval(System.nanoTime()-renderStart),
-    "autorestart:        " + autorestart,
-    "aurorandom:         " + autorandom,
-    "randomstart:        " + randomstart,
-    "maxframes:          " + maxframes,
-    "stat_type:          " + stat_type,
-    "stroke_len:         " + stroke_len,
-    "angles_no:          " + angles_no,
-    "segments:           " + segments,
-    "stroke_width:       " + stroke_width,
-    "stroke_alpha:       " + stroke_alpha,
+    "autorestart:        " + autorestart, 
+    "aurorandom:         " + autorandom, 
+    "randomstart:        " + randomstart, 
+    "maxframes:          " + maxframes, 
+    "stat_type:          " + stat_type, 
+    "stroke_len:         " + stroke_len, 
+    "angles_no:          " + angles_no, 
+    "segments:           " + segments, 
+    "stroke_width:       " + stroke_width, 
+    "stroke_alpha:       " + stroke_alpha, 
   };
   int lineheight = 16;
-  for (int i=0; i<textout.length; i++){
+  for (int i=0; i<textout.length; i++) {
     text(textout[i], 5, lineheight*(i+1));
   }
 }
 
 private static String formatInterval(final long l) {
-    final long hr = TimeUnit.MILLISECONDS.toHours(l);
-    final long min = TimeUnit.MILLISECONDS.toMinutes(l - TimeUnit.HOURS.toMillis(hr));
-    final long sec = TimeUnit.MILLISECONDS.toSeconds(l - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min));
-    final long ms = TimeUnit.MILLISECONDS.toMillis(l - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min) - TimeUnit.SECONDS.toMillis(sec));
-    return String.format("%02d:%02d:%02d.%03d", hr, min, sec, ms);
+  final long hr = TimeUnit.MILLISECONDS.toHours(l);
+  final long min = TimeUnit.MILLISECONDS.toMinutes(l - TimeUnit.HOURS.toMillis(hr));
+  final long sec = TimeUnit.MILLISECONDS.toSeconds(l - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min));
+  final long ms = TimeUnit.MILLISECONDS.toMillis(l - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min) - TimeUnit.SECONDS.toMillis(sec));
+  return String.format("%02d:%02d:%02d.%03d", hr, min, sec, ms);
 }
 
 void mouseDragged() {
@@ -502,12 +502,12 @@ String statType() {
 }
 
 void randomizeParameters() {
-      stat_type = random(1) < 0.05 ? (int) random(1, 4) : random(1) < 0.3 ? ABSDIST : random(1) < 0.5 ? ABSDIST2 : DIST;
-      stroke_len = (int) random(1, 15);
-      angles_no = (int) random(2, 50);
-      segments = (int) random(50, 1500);
-      stroke_width = random(1) < 0.7 ? 1.0 : random(0.5, 3);
-      stroke_alpha = (int) random(50, 200);
+  stat_type = random(1) < 0.05 ? (int) random(1, 4) : random(1) < 0.3 ? ABSDIST : random(1) < 0.5 ? ABSDIST2 : DIST;
+  stroke_len = (int) random(1, 15);
+  angles_no = (int) random(2, 50);
+  segments = (int) random(50, 1500);
+  stroke_width = random(1) < 0.7 ? 1.0 : random(0.5, 3);
+  stroke_alpha = (int) random(50, 200);
 }
 
 void printParameters() { // Prints current rendering parameters in a format that can be easily copied into the beginning of this script
