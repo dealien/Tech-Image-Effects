@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JFileChooser;
 
 // Used during The Shape of Things (2017-18)
 
@@ -23,10 +27,6 @@ import java.util.concurrent.TimeUnit;
 // NOTE: small changes to stroke_len, angles_no, stroke_alpha may have dramatic effect
 
 public static int debuglevel = 1; // between 0-2
-
-// image filename
-String filename = "Auditorium-Patio-Flat";
-String fileext = ".png";
 
 Boolean writeframes = true; // Determines whether rendered frames will be written to the disk
 Boolean autorestart = true; // If true, the rendering will be restarted upon reaching the set maxframes
@@ -53,6 +53,9 @@ boolean interactive = false; // (default false)
 // working buffer
 PGraphics buffer;
 
+String filename;
+String fileext;
+Boolean filechosen=false;
 PImage img;
 PFont mono;
 String sessionid;
@@ -69,8 +72,25 @@ int drawnum = 1;
 
 void settings() {
   pwd = sketchPath() + "/";
-  println("pwd = " + pwd);
-  PImage oimg = loadImage(pwd + filename + fileext);
+  sessionid = hex((int) random(0xffff), 4); // Generate a unique id for this session for use in generated file names
+  JFileChooser fc = new JFileChooser();
+  File f = new File(pwd);
+  fc.setCurrentDirectory(f); 
+  // Show open dialog
+  fc.showOpenDialog(null);
+  File selFile = fc.getSelectedFile();
+  if (selFile == null) {
+    println("You need to select an image to render.");
+    System.exit(1);
+  } else {
+    filename = selFile.getName().substring(0, selFile.getName().length() - (getExtension(selFile.getName()).length()+1)); // Sets filename without file extension
+    fileext = getExtension(selFile.getName());
+  }
+  if (randomstart) {
+    randomizeParameters();
+  }
+  // Load selected image and trim it to even dimensions
+  PImage oimg = loadImage(pwd + filename + "."+ fileext);
   int ow = oimg.width;
   int oh = oimg.height;
   if (ow % 2 != 0) {
@@ -85,16 +105,14 @@ void settings() {
       println("Image height trimmed to " + oh);
     }
   }
-  img = oimg.get(0, 0, ow, oh); // Trim 1 pixel off any uneven dimension
-
-  // calculate window size
+  img = oimg.get(0, 0, ow, oh); // Trim 1 pixel off any uneven dimension (trims one pixel off the bottom and/or right side if necessary)
+  // Calculate output window dimensions
   int max_window_size;
   if (maxcanvas) {
     max_window_size = displayWidth;
   } else {
     max_window_size = (oimg.width < displayWidth) ? oimg.width : displayWidth;
   }
-
   float ratio = (float) img.width / (float) img.height;
   int neww, newh;
   if (ratio < 1.0) {
@@ -106,34 +124,12 @@ void settings() {
   }
   println("Canvas Display Dimensions: " + int(neww) + "x" + int(newh)); // The dimensions of the canvas as it is displayed in the output window
   println("");
-  size(int(neww), int(newh)); // Set this equal to the dimensions of the image being rendered
+  size(int(neww), int(newh)); // Set window size equal to the dimensions of the image being rendered
 }
 
 void setup() {
-  if (randomstart) {
-    randomizeParameters();
-  }
-  pwd = sketchPath() + "/";
-  sessionid = hex((int) random(0xffff), 4);
   mono = createFont("Consolas", 12);
   textFont(mono);
-  PImage oimg = loadImage(pwd + filename + fileext);
-  int ow = oimg.width;
-  int oh = oimg.height;
-  if (ow % 2 != 0) {
-    ow = ow - 1;
-    if (debuglevel > 0) {
-      println("Image width trimmed to " + ow);
-    }
-  }
-  if (oh % 2 != 0) {
-    oh = oh - 1;
-    if (debuglevel > 0) {
-      println("Image height trimmed to " + oh);
-    }
-  }
-  img = oimg.get(0, 0, ow, oh); // Trim 1 pixel off any uneven dimension
-
   buffer = createGraphics(img.width, img.height);
   buffer.beginDraw();
   buffer.noFill();
@@ -524,7 +520,7 @@ void printParameters() { // Prints current rendering parameters in a format that
 void keyPressed() {
   println("");
   if (keyCode == 32) { // Pressing SPACE saves a snapshot of the current frame to a folder in the project root directory with the current settings written in the filename
-    buffer.save(pwd + "Snapshots/" + filename + "/res_" + filename + "_" + sessionid + "_stat=" + statType() + "_len=" + stroke_len + "_ang=" + angles_no + "_seg=" + segments + "_width=" + stroke_width + "_alpha=" + stroke_alpha + "_" + hex((int) random(0xffff), 4) + fileext);
+    buffer.save(pwd + "Snapshots/" + filename + "/res_" + filename + "_" + sessionid + "_stat=" + statType() + "_len=" + stroke_len + "_ang=" + angles_no + "_seg=" + segments + "_width=" + stroke_width + "_alpha=" + stroke_alpha + "_" + hex((int) random(0xffff), 4) + ".png");
     println("image saved | frame " + frame);
   } else if (key == 'i') { // Pressing I toggles interactive mode
     interactive = !interactive;
@@ -620,4 +616,20 @@ public static final class OsCheck {
     }
     return detectedOS;
   }
+}
+
+public static String getExtension(String fileName) {
+    char ch;
+    int len;
+    if(fileName==null || 
+            (len = fileName.length())==0 || 
+            (ch = fileName.charAt(len-1))=='/' || ch=='\\' || //in the case of a directory
+             ch=='.' ) //in the case of . or ..
+        return "";
+    int dotInd = fileName.lastIndexOf('.'),
+        sepInd = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
+    if( dotInd<=sepInd )
+        return "";
+    else
+        return fileName.substring(dotInd+1).toLowerCase();
 }
