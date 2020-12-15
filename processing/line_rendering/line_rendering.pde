@@ -428,6 +428,7 @@ void drawOverlay() {
     "prev. render time:  " + (double)Math.round(elapsedTime*100d)/100d + " ms", 
     "avg render time:    " + (double)Math.round(avg*100d)/100d + " ms", 
     // "total render time : " + formatInterval(System.nanoTime()-renderStart),
+    "dimensions:         " + img.width + " x " + img.height,
     "autorestart:        " + autorestart, 
     "aurorandom:         " + autorandom, 
     "randomstart:        " + randomstart, 
