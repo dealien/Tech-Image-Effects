@@ -304,17 +304,13 @@ void drawMe() {
         case Windows:
           {
             writer.println("@echo off");
-            writer.println("set d=%~dp0");
-            writer.println("echo \"%d%\"");
-            writer.println("for %%a in (\"%d%\") do set \"p_dir=%%~dpa\"");
-            writer.println("for %%a in (%p_dir:~0,-1%) do set \"p2_dir=%%~dpa\"");
-            writer.println("for %%a in (%p2_dir:~0,-1%) do set \"p3_dir=%%~dpa\"");
-            writer.println("set videodir=%p3_dir%Videos");
-            writer.println("echo %videodir%");
-            writer.println("if not exist %videodir% mkdir %videodir%");
-            writer.println("cd %videodir%");
-            writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"%d%\\" + filename + "_%%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"%videodir%\\" + filename + " " + sessionid + ".mp4\"");
-            writer.println("rem ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"%d%\\" + filename + "_%%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"%videodir%\\" + filename + " " + sessionid + " Reverse.mp4\"");
+            writer.println("for %%A in (\"%~dp0\\.\\..\\..\\..\") do set \"parent=%%~fA\"");
+            writer.println("set videodir=\"%parent%\\Videos\"");
+            writer.println("echo Writing video to \"%videodir%\"");
+            writer.println("if not exist \"%videodir%\" mkdir \"%videodir%\"");
+            writer.println("cd \"%videodir%\"");
+            writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"%~dp0\\" + filename + "_%%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"%videodir%\\" + filename + " " + sessionid + ".mp4\"");
+            writer.println("rem ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"%~dp0\\" + filename + "_%%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"%videodir%\\" + filename + " " + sessionid + " Reverse.mp4\"");
             break;
           }
         case MacOS:
