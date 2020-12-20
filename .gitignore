@@ -4,3 +4,7 @@ Thumbs.db
 *.mp4
 res_*
 *Adam*
+*.autosave
+build-tmp/
+*.sublime-project
+*.sublime-workspace
