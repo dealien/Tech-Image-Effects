@@ -125,7 +125,6 @@ void settings() {
     newh = (int)(max_window_size / ratio);
   }
   println("Canvas Display Dimensions: " + int(neww) + "x" + int(newh)); // The dimensions of the canvas as it is displayed in the output window
-  println("");
   size(int(neww), int(newh)); // Set window size equal to the dimensions of the image being rendered
 }
 
@@ -313,6 +312,7 @@ void drawMe() {
             writer.println("cd \"%videodir%\"");
             writer.println("ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"%~dp0\\" + filename + "_%%06d.png\" -vcodec libx264 -pix_fmt yuv420p \"%videodir%\\" + filename + " " + sessionid + ".mp4\"");
             writer.println("rem ffmpeg -n -pattern_type sequence -r 40 -f image2 -i \"%~dp0\\" + filename + "_%%06d.png\" -vcodec libx264 -pix_fmt yuv420p -vf reverse \"%videodir%\\" + filename + " " + sessionid + " Reverse.mp4\"");
+            writer.println("copy \"%~dp0\\" + "settings.txt" + "\" \"%videodir%\\" + filename + " " + sessionid + " settings.txt");
             break;
           }
         case MacOS:
@@ -360,13 +360,23 @@ void drawMe() {
         }
         settingsfile.createNewFile();
         writer = new PrintWriter(new FileWriter(settingsfile));
-        writer.println("int stat_type= " + statType() + ";");
-        writer.println("int stroke_len= " + stroke_len + ";");
-        writer.println("int angles_no= " + angles_no + ";");
-        writer.println("int segments= " + segments + ";");
-        writer.println("float stroke_width= " + stroke_width + ";");
-        writer.println("int stroke_alpha= " + stroke_alpha + ";");
-        writer.println("int maxframes= " + maxframes + ";");
+        writer.println("int stat_type = " + statType() + ";");
+        writer.println("int stroke_len = " + stroke_len + ";");
+        writer.println("int angles_no = " + angles_no + ";");
+        writer.println("int segments = " + segments + ";");
+        writer.println("float stroke_width = " + stroke_width + ";");
+        writer.println("int stroke_alpha = " + stroke_alpha + ";");
+        writer.println("int maxframes = " + maxframes + ";");
+        writer.println("");
+        writer.println("{{RenderSettings");
+        writer.println("|stat_type=" + statType());
+        writer.println("|stroke_len=" + stroke_len);
+        writer.println("|angles_no=" + angles_no);
+        writer.println("|segments=" + segments);
+        writer.println("|stroke_width=" + stroke_width);
+        writer.println("|stroke_alpha=" + stroke_alpha);
+        writer.println("|maxframes=" + maxframes);
+        writer.println("}}");
       } 
       catch (IOException e) {
         System.err.println("IOException: " + e.getMessage());
@@ -383,7 +393,6 @@ void drawMe() {
     println("");
     println("####################");
     println("Reached frame limit. Beginning new rendering...");
-    println("");
     if (autorandom) {
       randomizeParameters();
     }
@@ -506,18 +515,17 @@ void randomizeParameters() {
 }
 
 void printParameters() { // Prints current rendering parameters in a format that can be easily copied into the beginning of this script
-  println("int stat_type= " + statType() + ";");
-  println("int stroke_len= " + stroke_len + ";");
-  println("int angles_no= " + angles_no + ";");
-  println("int segments= " + segments + ";");
-  println("float stroke_width= " + stroke_width + ";");
-  println("int stroke_alpha= " + stroke_alpha + ";");
-  println("int maxframes= " + maxframes + ";");
   println("");
+  println("int stat_type = " + statType() + ";");
+  println("int stroke_len = " + stroke_len + ";");
+  println("int angles_no = " + angles_no + ";");
+  println("int segments = " + segments + ";");
+  println("float stroke_width = " + stroke_width + ";");
+  println("int stroke_alpha = " + stroke_alpha + ";");
+  println("int maxframes = " + maxframes + ";");
 }
 
 void keyPressed() {
-  println("");
   if (keyCode == 32) { // Pressing SPACE saves a snapshot of the current frame to a folder in the project root directory with the current settings written in the filename
     buffer.save(pwd + "Snapshots/" + filename + "/res_" + filename + "_" + sessionid + "_stat=" + statType() + "_len=" + stroke_len + "_ang=" + angles_no + "_seg=" + segments + "_width=" + stroke_width + "_alpha=" + stroke_alpha + "_" + hex((int) random(0xffff), 4) + ".png");
     println("image saved | frame " + frame);
@@ -537,7 +545,6 @@ void keyPressed() {
       println("");
       println("####################");
       println("Rendering manually restarted. Beginning new rendering...");
-      println("");
       reinit();
       printParameters();
     } else {
