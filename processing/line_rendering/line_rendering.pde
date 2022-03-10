@@ -55,6 +55,7 @@ PGraphics buffer;
 
 String filename;
 String fileext;
+String filepath;
 Boolean filechosen=false;
 PImage img;
 PFont mono;
@@ -83,6 +84,7 @@ void settings() {
     println("You need to select an image to render.");
     System.exit(1);
   } else {
+    filepath = selFile.getPath();
     filename = selFile.getName().substring(0, selFile.getName().length() - (getExtension(selFile.getName()).length()+1)); // Sets filename without file extension
     fileext = getExtension(selFile.getName());
   }
@@ -90,7 +92,7 @@ void settings() {
     randomizeParameters();
   }
   // Load selected image and trim it to even dimensions
-  PImage oimg = loadImage(pwd + filename + "."+ fileext);
+  PImage oimg = loadImage(filepath);
   int ow = oimg.width;
   int oh = oimg.height;
   if (ow % 2 != 0) {
