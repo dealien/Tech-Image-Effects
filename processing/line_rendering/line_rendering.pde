@@ -21,6 +21,7 @@ import javax.swing.JFileChooser;
 // * set image filename and parameters
 // * run
 //   * SPACE to save
+//   * press 'S' to toggle autostop
 //   * press 'R' to restart with random settings
 //   * press 'I' for interactive mode, mouse click or drag starts line (longer mouse movements take longer to calculate)
 //   * click to view coordinates at that point and the current frame
@@ -29,6 +30,7 @@ import javax.swing.JFileChooser;
 public static int debuglevel = 1; // between 0-2
 
 Boolean writeframes = true; // Determines whether rendered frames will be written to the disk
+Boolean autostop = false; // If true, the rendering will stop upon reaching the set maxframes (checked before autorestart)
 Boolean autorestart = true; // If true, the rendering will be restarted upon reaching the set maxframes
 Boolean autorandom = true; // If true, randomizes the settings after an auto restart
 Boolean randomstart = true; // If true, randomizes starting parameters, ignoring any set below
@@ -389,6 +391,9 @@ void drawMe() {
   }
 
   frame++;
+  if (frame > maxframes && autostop) {
+    System.exit(0);
+  }
   if (frame > maxframes && autorestart) {
     println("");
     println("####################");
@@ -532,6 +537,13 @@ void keyPressed() {
   } else if (key == 'i') { // Pressing I toggles interactive mode
     interactive = !interactive;
     println("interactive mode: " + (interactive ? "ON" : "OFF"));
+  } else if (key == 's') { // Pressing S toggles autostop
+    autostop = !autostop;
+    if (autostop) {
+      println("Autostop enabled");
+    } else {
+      println("Autostop disabled");
+    }
   } else if (key == 'r') { // Pressing R restarts the rendering with random settings
     // autorestart = false; // Manually restarting the rendering disables automatic restarting of the rendering for the current session
     if (frame < 300) { // Manually restarting the rendering is only possible within the first 300 frames of generation
